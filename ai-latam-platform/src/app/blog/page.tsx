@@ -11,37 +11,53 @@ type Post = {
   publishedAt: string;
 };
 
-const POSTS: Post[] = [
+const DUMMY_POSTS: Post[] = [
   {
     id: 1,
     title: "Midjourney V6 提示词工程全面指南",
-    excerpt:
-      "从光影控制到材质渲染，拆解 V6 版本的核心逻辑与实战技巧。",
+    excerpt: "从光影控制到材质渲染，拆解 V6 版本的核心逻辑与实战技巧。",
     tag: "深度测评",
-    read: "8 Min Read",
-    date: "2025.12.23",
+    readTime: "8 Min Read",
+    publishedAt: "2025.12.23",
   },
   {
     id: 2,
     title: "Claude 做客户调研的高效流程",
-    excerpt:
-      "用结构化提示词建立用户洞察框架，提高调研质量与效率。",
+    excerpt: "用结构化提示词建立用户洞察框架，提高调研质量与效率。",
     tag: "增长实验",
-    read: "6 Min Read",
-    date: "2025.12.19",
+    readTime: "6 Min Read",
+    publishedAt: "2025.12.19",
   },
   {
     id: 3,
     title: "GPT-4o 视频脚本黄金模板",
-    excerpt:
-      "一套可复用的短视频脚本框架，适用于带货与品牌传播。",
+    excerpt: "一套可复用的短视频脚本框架，适用于带货与品牌传播。",
     tag: "提示词拆解",
-    read: "5 Min Read",
-    date: "2025.12.12",
+    readTime: "5 Min Read",
+    publishedAt: "2025.12.12",
   },
 ];
 
 export const dynamic = "force-dynamic";
+
+function formatPublishedAt(value?: string | null): string {
+  if (!value) {
+    return "2025.12.23";
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "2025.12.23";
+  }
+
+  return date
+    .toLocaleDateString("zh-CN", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+    .replace(/\//g, ".");
+}
 
 async function getPosts(): Promise<Post[]> {
   const { data, error } = await supabase
@@ -50,7 +66,7 @@ async function getPosts(): Promise<Post[]> {
     .order("published_at", { ascending: false });
 
   if (error || !data?.length) {
-    return POSTS;
+    return DUMMY_POSTS;
   }
 
   return data.map((row) => ({
@@ -59,7 +75,7 @@ async function getPosts(): Promise<Post[]> {
     excerpt: row.excerpt || "暂无摘要。",
     tag: row.tag || "深度测评",
     readTime: row.read_time || "5 Min Read",
-    publishedAt: row.published_at || "2025.12.23",
+    publishedAt: formatPublishedAt(row.published_at),
   }));
 }
 
