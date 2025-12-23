@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Nav from "@/components/nav";
 import { supabase } from "@/lib/supabase";
 import PromptGrid, { type PromptItem } from "./prompt-grid";
 
@@ -95,12 +95,12 @@ export default async function PromptSquarePage() {
   const prompts = await getPrompts();
 
   return (
-    <div className="min-h-screen bg-[#0d1714] py-8 text-white [font-family:var(--font-eco)]">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="relative overflow-hidden rounded-[28px] bg-[#0d1714] shadow-[0_60px_160px_rgba(5,12,9,0.6)]">
+    <div className="min-h-screen bg-[#0d1714] text-white [font-family:var(--font-eco)]">
+      <div className="relative overflow-hidden bg-[#0d1714]">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(175,210,200,0.18),transparent_60%),radial-gradient(circle_at_15%_10%,rgba(90,150,138,0.22),transparent_55%),radial-gradient(circle_at_85%_25%,rgba(255,210,152,0.2),transparent_45%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(12,22,18,0.2),rgba(8,12,10,0.62))]" />
           <div className="absolute inset-0 bg-[url('/eco-hero.jpg')] bg-cover bg-center opacity-80" />
+          <div className="brightness-overlay absolute inset-0 bg-white mix-blend-soft-light pointer-events-none" />
           <div
             className="absolute inset-0 opacity-[0.04] mix-blend-soft-light"
             style={{
@@ -108,25 +108,8 @@ export default async function PromptSquarePage() {
                 "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E\")",
             }}
           />
-          <div className="relative min-h-[85vh] px-6 pb-14 pt-10 sm:px-10 lg:px-16">
-            <nav className="flex items-center justify-between rounded-full bg-[#121f1b]/80 px-6 py-3 text-sm font-medium text-white/85 shadow-[0_12px_40px_rgba(0,0,0,0.4)] backdrop-blur-xl">
-              <div className="flex items-center gap-6">
-                <span className="text-xs font-semibold uppercase tracking-[0.35em] text-white/80">
-                  AI LATAM Platform
-                </span>
-                <Link className="hidden sm:inline hover:text-amber-100" href="/tools">
-                  工具目录
-                </Link>
-                <Link className="hidden sm:inline hover:text-amber-100" href="/prompts">
-                  提示词广场
-                </Link>
-                <span className="hidden sm:inline">课程</span>
-                <span className="hidden sm:inline">资源</span>
-              </div>
-              <button className="rounded-md bg-[#ccff00] px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#0d1714] transition hover:bg-[#d7ff33] hover:shadow-[0_10px_30px_rgba(204,255,0,0.35)]">
-                获取指南
-              </button>
-            </nav>
+          <div className="relative min-h-[85vh] px-8 pb-14 pt-10 sm:px-12 lg:px-20">
+            <Nav currentPath="/prompts" />
 
             <div className="mt-16 grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
               <div className="space-y-8 text-left">
@@ -176,7 +159,6 @@ export default async function PromptSquarePage() {
             <PromptGrid prompts={prompts} />
           </div>
         </div>
-      </div>
     </div>
   );
 }

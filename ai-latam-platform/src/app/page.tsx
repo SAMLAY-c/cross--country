@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Script from "next/script";
+import Nav from "@/components/nav";
 
 export default function Home() {
   return (
@@ -8,25 +9,9 @@ export default function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(175,210,200,0.18),transparent_60%),radial-gradient(circle_at_15%_10%,rgba(90,150,138,0.22),transparent_55%),radial-gradient(circle_at_85%_25%,rgba(255,210,152,0.2),transparent_45%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(12,22,18,0.2),rgba(8,12,10,0.62))]" />
         <div className="absolute inset-0 bg-[url('/eco-hero.jpg')] bg-cover bg-center opacity-80" />
-        <main className="relative mx-auto flex min-h-screen max-w-7xl flex-col gap-16 px-6 pb-20 pt-10 sm:px-10 lg:px-16">
-          <nav className="flex items-center justify-between rounded-full bg-[#121f1b]/80 px-6 py-3 text-sm font-medium text-white/85 shadow-[0_12px_40px_rgba(0,0,0,0.4)] backdrop-blur-xl">
-            <div className="flex items-center gap-6">
-              <span className="text-xs font-semibold uppercase tracking-[0.35em] text-white/80">
-                AI LATAM Platform
-              </span>
-              <Link className="hidden sm:inline hover:text-amber-100" href="/tools">
-                工具目录
-              </Link>
-              <Link className="hidden sm:inline hover:text-amber-100" href="/prompts">
-                提示词广场
-              </Link>
-              <span className="hidden sm:inline">课程</span>
-              <span className="hidden sm:inline">资源</span>
-            </div>
-            <button className="rounded-md bg-[#ccff00] px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#0d1714] transition hover:bg-[#d7ff33] hover:shadow-[0_10px_30px_rgba(204,255,0,0.35)]">
-              获取指南
-            </button>
-          </nav>
+        <div className="brightness-overlay absolute inset-0 bg-white mix-blend-soft-light pointer-events-none" />
+        <main className="relative w-full flex min-h-screen flex-col gap-16 px-8 pb-20 pt-10 sm:px-12 lg:px-20">
+          <Nav currentPath="/" />
 
           <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
             <div className="space-y-8 text-left">
@@ -117,6 +102,94 @@ export default function Home() {
                 </p>
               </div>
             ))}
+          </section>
+
+          <section className="w-full space-y-12 pt-10">
+            <div className="space-y-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.4em] text-white/50">
+                Insights
+              </p>
+              <h2 className="text-4xl font-extrabold leading-tight sm:text-5xl [font-family:var(--font-display)]">
+                <span className="text-[#ccff00]">INSIGHTS.</span> 记录 AI 的每一次进化。
+              </h2>
+              <p className="max-w-2xl text-sm text-white/55 sm:text-base leading-relaxed">
+                深度测评、提示词拆解、工具对比。内容以可落地为先，持续更新。
+              </p>
+            </div>
+
+            <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_0.8fr]">
+              <div className="relative overflow-hidden rounded-2xl bg-[#1a2622] shadow-[0_30px_70px_rgba(0,0,0,0.5)]">
+                <div className="absolute inset-0 bg-[url('/eco-hero.jpg')] bg-cover bg-center opacity-90" />
+                <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(5,10,8,0.25),rgba(5,10,8,0.65))]" />
+                <div className="relative flex min-h-[320px] items-end p-6 sm:p-8">
+                  <span className="rounded-md bg-[#ccff00] px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-[#0d1714]">
+                    深度测评
+                  </span>
+                </div>
+              </div>
+              <div className="space-y-5">
+                <div className="flex flex-wrap gap-4 text-xs uppercase tracking-[0.3em] text-white/40">
+                  <span>8 Min Read</span>
+                  <span>2025.12.23</span>
+                </div>
+                <h3 className="text-3xl font-extrabold leading-tight text-white">
+                  Midjourney V6 <span className="text-[#ccff00]">提示词工程</span> 全面指南
+                </h3>
+                <p className="text-sm text-white/60 leading-relaxed">
+                  从光影控制到材质渲染，深入解析 V6 的底层逻辑与实战案例，让作品更像电影。
+                </p>
+                <button className="inline-flex items-center gap-2 rounded-md bg-white/10 px-4 py-2 text-sm font-semibold text-white/80 transition hover:bg-white/16">
+                  阅读全文 →
+                </button>
+              </div>
+            </div>
+
+            <div className="flex gap-3 overflow-x-auto pb-2 text-xs uppercase tracking-[0.25em] text-white/60">
+              {["深度测评", "提示词拆解", "工具对比", "增长实验", "自动化案例"].map(
+                (pill) => (
+                  <span
+                    key={pill}
+                    className="shrink-0 rounded-md bg-white/10 px-4 py-2 text-white/70 transition hover:bg-white/16"
+                  >
+                    {pill}
+                  </span>
+                )
+              )}
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {[
+                "如何用 Claude 做客户调研",
+                "GPT-4o 视频脚本的黄金模板",
+                "RAG 实战：从 0 到可用",
+              ].map((title) => (
+                <article
+                  key={title}
+                  className="rounded-2xl bg-[#1a2622] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.4)] transition hover:-translate-y-1"
+                >
+                  <div className="aspect-video rounded-xl bg-[#202d28]"></div>
+                  <h4 className="mt-4 text-lg font-semibold text-white transition group-hover:text-[#ccff00]">
+                    {title}
+                  </h4>
+                </article>
+              ))}
+            </div>
+
+            <div className="rounded-2xl bg-[#1a2622] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
+              <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+                Daily Prompt
+              </p>
+              <div className="mt-4 rounded-xl bg-[#202d28] p-4 font-mono text-sm text-white/80">
+                <p>2025-12-23</p>
+                <p className="mt-2">
+                  /imagine prompt: a futuristic dashboard with neon green accents,
+                  glass panels, cinematic lighting --v 6.0
+                </p>
+              </div>
+              <button className="mt-4 inline-flex items-center gap-2 rounded-md bg-[#ccff00] px-4 py-2 text-sm font-semibold text-[#0d1714] transition hover:bg-[#d7ff33] hover:shadow-[0_12px_30px_rgba(204,255,0,0.35)]">
+                复制提示词
+              </button>
+            </div>
           </section>
         </main>
       </div>

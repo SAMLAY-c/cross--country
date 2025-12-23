@@ -24,3 +24,15 @@ body {
   color: var(--foreground);
   font-family: var(--font-body), "Trebuchet MS", sans-serif;
 }
+
+:root {
+  --ui-brightness: 0;
+}
+
+:root[data-theme="bright"] {
+  --ui-brightness: 0.06;
+}
+
+.brightness-overlay {
+  opacity: var(--ui-brightness);
+}
