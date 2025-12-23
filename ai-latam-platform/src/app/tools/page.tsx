@@ -1,5 +1,5 @@
 import Nav from "@/components/nav";
-import { supabase } from "@/lib/supabase";
+import { DUMMY_TOOLS } from "@/lib/mock-data";
 import { ExternalLink } from "lucide-react";
 import clsx from "clsx";
 
@@ -12,43 +12,7 @@ type Tool = {
   url?: string | null;
 };
 
-const DUMMY_TOOLS: Tool[] = [
-  {
-    id: 1,
-    name: "Kling AI",
-    tag: "视频",
-    description: "中国最强大的视频生成工具，Sora 的竞争对手。",
-    price: "免费试用",
-  },
-  {
-    id: 2,
-    name: "Midjourney",
-    tag: "图像",
-    description: "艺术图像生成的黄金标准。",
-    price: "付费",
-  },
-  {
-    id: 3,
-    name: "HeyGen",
-    tag: "数字人",
-    description: "声音克隆和逼真视频数字人，用于营销推广。",
-    price: "免费增值",
-  },
-  {
-    id: 4,
-    name: "Notion AI",
-    tag: "生产力",
-    description: "你的第二大脑，现在拥有魔法般的写作能力。",
-    price: "付费",
-  },
-  {
-    id: 5,
-    name: "Gamma",
-    tag: "演示",
-    description: "用 AI 在几秒钟内创建演示文稿。",
-    price: "免费增值",
-  },
-];
+const DUMMY_TOOLS_TYPED: Tool[] = DUMMY_TOOLS;
 
 const priceBadgeStyles: Record<string, string> = {
   "免费试用": "bg-emerald-200/90 text-emerald-950",
@@ -118,24 +82,32 @@ function ToolCard({
 
 export const dynamic = "force-dynamic";
 
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
+
 async function getTools(): Promise<Tool[]> {
-  const { data, error } = await supabase
-    .from("tools")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error || !data?.length) {
-    return DUMMY_TOOLS;
+  try {
+    const response = await fetch(`${API_BASE}/api/tools`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return DUMMY_TOOLS_TYPED;
+    }
+    const data = (await response.json()) as { tools?: Tool[] };
+    if (!data.tools?.length) {
+      return DUMMY_TOOLS_TYPED;
+    }
+    return data.tools.map((row) => ({
+      id: row.id,
+      name: row.name,
+      tag: row.tag || row.category || "工具",
+      description: row.description || "暂无描述。",
+      price: row.price || "付费",
+      url: row.url ?? null,
+    }));
+  } catch {
+    return DUMMY_TOOLS_TYPED;
   }
-
-  return data.map((row) => ({
-    id: row.id,
-    name: row.name,
-    tag: row.tag || row.category || "工具",
-    description: row.description || "暂无描述。",
-    price: row.price || "付费",
-    url: row.url ?? null,
-  }));
 }
 
 export default async function ToolsDirectory() {

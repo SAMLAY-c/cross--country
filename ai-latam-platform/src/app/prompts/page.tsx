@@ -1,94 +1,37 @@
 import Nav from "@/components/nav";
-import { supabase } from "@/lib/supabase";
 import PromptGrid, { type PromptItem } from "./prompt-grid";
+import { DUMMY_PROMPTS } from "@/lib/mock-data";
 
 export const dynamic = "force-dynamic";
 
-const DUMMY_PROMPTS: PromptItem[] = [
-  {
-    id: 1,
-    title: "Reels 爆款脚本",
-    category: "营销",
-    platforms: ["GPT-4", "Claude"],
-    preview:
-      "你是创意策略师。为一个带货 Reels 生成 30 秒脚本...",
-    prompt:
-      "你是创意策略师。为[产品]生成一个 30 秒 Reels 脚本。开头 3 秒必须有强钩子，包含快速演示，并以直接 CTA 结尾。语气：高能、鼓舞。",
-  },
-  {
-    id: 2,
-    title: "产品发布简报",
-    category: "产品",
-    platforms: ["GPT-4", "Gemini"],
-    preview:
-      "你是资深 PMM，为新产品撰写发布简报...",
-    prompt:
-      "你是资深产品市场经理。为[产品]撰写发布简报，包含目标人群、价值主张、定位、关键信息、渠道与 KPI。",
-  },
-  {
-    id: 3,
-    title: "广告创意点子",
-    category: "广告",
-    platforms: ["GPT-4"],
-    preview:
-      "为某品牌生成 10 条 Meta Ads 广告创意...",
-    prompt:
-      "为[行业]品牌生成 10 条 Meta Ads 创意，包含格式、钩子、主文案与 CTA。",
-  },
-  {
-    id: 4,
-    title: "内容计划表",
-    category: "社媒",
-    platforms: ["Claude", "GPT-4"],
-    preview:
-      "生成 30 天内容日历，包含主题与目标...",
-    prompt:
-      "为[品牌]生成 30 天内容日历，每天包含主题、形式、目标与 CTA。",
-  },
-  {
-    id: 5,
-    title: "Midjourney 画面提示词",
-    category: "创意",
-    platforms: ["Midjourney"],
-    preview:
-      "为夜景暖光画面生成电影感提示词...",
-    prompt:
-      "生成电影感提示词：夜晚木屋场景，室内暖光，潮湿森林，轻雾，编辑风摄影，35mm，景深明显，低调光。",
-  },
-  {
-    id: 6,
-    title: "销售邮件模板",
-    category: "销售",
-    platforms: ["GPT-4", "Claude"],
-    preview:
-      "撰写一封咨询式 B2B 销售邮件...",
-    prompt:
-      "为[产品]撰写咨询式 B2B 销售邮件，包含痛点、价值主张、社会证明与预约演示 CTA。",
-  },
-];
+const DUMMY_PROMPTS_TYPED: PromptItem[] = DUMMY_PROMPTS;
+
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
 
 async function getPrompts(): Promise<PromptItem[]> {
-  const { data, error } = await supabase
-    .from("prompts")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error || !data?.length) {
-    return DUMMY_PROMPTS;
+  try {
+    const response = await fetch(`${API_BASE}/api/prompts`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return DUMMY_PROMPTS_TYPED;
+    }
+    const data = (await response.json()) as { prompts?: PromptItem[] };
+    if (!data.prompts?.length) {
+      return DUMMY_PROMPTS_TYPED;
+    }
+    return data.prompts.map((row) => ({
+      id: row.id,
+      title: row.title,
+      category: row.category,
+      platforms: Array.isArray(row.platforms) ? row.platforms : [],
+      preview: row.preview || row.prompt?.slice(0, 120) || "",
+      prompt: row.prompt,
+    }));
+  } catch {
+    return DUMMY_PROMPTS_TYPED;
   }
-
-  return data.map((row) => ({
-    id: row.id,
-    title: row.title,
-    category: row.category,
-    platforms: Array.isArray(row.platforms)
-      ? row.platforms
-      : row.platforms
-        ? [row.platforms]
-        : [],
-    preview: row.preview || row.prompt?.slice(0, 120) || "",
-    prompt: row.prompt,
-  }));
 }
 
 export default async function PromptSquarePage() {

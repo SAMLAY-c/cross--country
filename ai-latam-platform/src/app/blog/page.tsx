@@ -1,6 +1,6 @@
 import Nav from "@/components/nav";
 import StickyFilterBar from "@/components/sticky-filter-bar";
-import { supabase } from "@/lib/supabase";
+import { DUMMY_POSTS } from "@/lib/mock-data";
 
 type Post = {
   id: number;
@@ -11,34 +11,12 @@ type Post = {
   publishedAt: string;
 };
 
-const DUMMY_POSTS: Post[] = [
-  {
-    id: 1,
-    title: "Midjourney V6 提示词工程全面指南",
-    excerpt: "从光影控制到材质渲染，拆解 V6 版本的核心逻辑与实战技巧。",
-    tag: "深度测评",
-    readTime: "8 Min Read",
-    publishedAt: "2025.12.23",
-  },
-  {
-    id: 2,
-    title: "Claude 做客户调研的高效流程",
-    excerpt: "用结构化提示词建立用户洞察框架，提高调研质量与效率。",
-    tag: "增长实验",
-    readTime: "6 Min Read",
-    publishedAt: "2025.12.19",
-  },
-  {
-    id: 3,
-    title: "GPT-4o 视频脚本黄金模板",
-    excerpt: "一套可复用的短视频脚本框架，适用于带货与品牌传播。",
-    tag: "提示词拆解",
-    readTime: "5 Min Read",
-    publishedAt: "2025.12.12",
-  },
-];
+const DUMMY_POSTS_TYPED: Post[] = DUMMY_POSTS;
 
 export const dynamic = "force-dynamic";
+
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
 
 function formatPublishedAt(value?: string | null): string {
   if (!value) {
@@ -60,23 +38,28 @@ function formatPublishedAt(value?: string | null): string {
 }
 
 async function getPosts(): Promise<Post[]> {
-  const { data, error } = await supabase
-    .from("posts")
-    .select("*")
-    .order("published_at", { ascending: false });
-
-  if (error || !data?.length) {
-    return DUMMY_POSTS;
+  try {
+    const response = await fetch(`${API_BASE}/api/posts`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return DUMMY_POSTS_TYPED;
+    }
+    const data = (await response.json()) as { posts?: Post[] };
+    if (!data.posts?.length) {
+      return DUMMY_POSTS_TYPED;
+    }
+    return data.posts.map((row) => ({
+      id: row.id,
+      title: row.title,
+      excerpt: row.excerpt || "暂无摘要。",
+      tag: row.tag || "深度测评",
+      readTime: row.readTime || row.read_time || "5 Min Read",
+      publishedAt: formatPublishedAt(row.published_at),
+    }));
+  } catch {
+    return DUMMY_POSTS_TYPED;
   }
-
-  return data.map((row) => ({
-    id: row.id,
-    title: row.title,
-    excerpt: row.excerpt || "暂无摘要。",
-    tag: row.tag || "深度测评",
-    readTime: row.read_time || "5 Min Read",
-    publishedAt: formatPublishedAt(row.published_at),
-  }));
 }
 
 export default async function BlogPage() {

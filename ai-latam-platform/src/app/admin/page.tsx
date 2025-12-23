@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { DUMMY_POSTS, DUMMY_PROMPTS, DUMMY_TOOLS } from "@/lib/mock-data";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
@@ -101,6 +102,53 @@ const initialPostForm: PostForm = {
   content: "",
 };
 
+const MOCK_TOOLS: Tool[] = DUMMY_TOOLS.map((tool) => ({
+  id: tool.id,
+  name: tool.name,
+  tag: tool.tag,
+  category: null,
+  description: tool.description,
+  price: tool.price,
+  url: tool.url ?? null,
+  affiliate_link: null,
+  logo_url: null,
+  image_url: null,
+  is_featured: false,
+  created_at: new Date().toISOString(),
+}));
+
+const MOCK_PROMPTS: Prompt[] = DUMMY_PROMPTS.map((prompt) => ({
+  ...prompt,
+  created_at: new Date().toISOString(),
+}));
+
+const parseDotDate = (value: string): string => {
+  const parts = value.split(".");
+  if (parts.length === 3) {
+    const [year, month, day] = parts.map((part) => Number(part));
+    if (!Number.isNaN(year) && !Number.isNaN(month) && !Number.isNaN(day)) {
+      return new Date(Date.UTC(year, month - 1, day)).toISOString();
+    }
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return new Date().toISOString();
+  }
+  return date.toISOString();
+};
+
+const MOCK_POSTS: Post[] = DUMMY_POSTS.map((post) => ({
+  id: post.id,
+  title: post.title,
+  excerpt: post.excerpt ?? null,
+  tag: post.tag ?? null,
+  read_time: post.readTime ?? null,
+  published_at: parseDotDate(post.publishedAt),
+  content: null,
+  created_at: new Date().toISOString(),
+}));
+
 async function apiRequest<T>(
   path: string,
   options: RequestInit = {},
@@ -147,6 +195,11 @@ export default function AdminPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [usingMock, setUsingMock] = useState({
+    tools: false,
+    prompts: false,
+    posts: false,
+  });
 
   const [toolForm, setToolForm] = useState<ToolForm>(initialToolForm);
   const [promptForm, setPromptForm] = useState<PromptForm>(initialPromptForm);
@@ -174,11 +227,32 @@ export default function AdminPage() {
         apiRequest<{ prompts: Prompt[] }>("/api/prompts"),
         apiRequest<{ posts: Post[] }>("/api/posts"),
       ]);
-      setTools(toolData.tools ?? []);
-      setPrompts(promptData.prompts ?? []);
-      setPosts(postData.posts ?? []);
+      const toolList = toolData.tools ?? [];
+      const promptList = promptData.prompts ?? [];
+      const postList = postData.posts ?? [];
+
+      const useToolMock = toolList.length === 0;
+      const usePromptMock = promptList.length === 0;
+      const usePostMock = postList.length === 0;
+
+      setTools(useToolMock ? MOCK_TOOLS : toolList);
+      setPrompts(usePromptMock ? MOCK_PROMPTS : promptList);
+      setPosts(usePostMock ? MOCK_POSTS : postList);
+      setUsingMock({
+        tools: useToolMock,
+        prompts: usePromptMock,
+        posts: usePostMock,
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "加载失败，请重试");
+      setError(
+        err instanceof Error
+          ? `${err.message}（已切换为前端虚拟数据）`
+          : "加载失败，已切换为前端虚拟数据",
+      );
+      setTools(MOCK_TOOLS);
+      setPrompts(MOCK_PROMPTS);
+      setPosts(MOCK_POSTS);
+      setUsingMock({ tools: true, prompts: true, posts: true });
     } finally {
       setLoading(false);
     }
@@ -330,6 +404,90 @@ export default function AdminPage() {
     }
   };
 
+  const handleSeedMockData = async () => {
+    setError(null);
+    setLoading(true);
+    try {
+      const [existingToolData, existingPromptData, existingPostData] =
+        await Promise.all([
+          apiRequest<{ tools: Tool[] }>("/api/tools"),
+          apiRequest<{ prompts: Prompt[] }>("/api/prompts"),
+          apiRequest<{ posts: Post[] }>("/api/posts"),
+        ]);
+
+      const toolNames = new Set(
+        (existingToolData.tools ?? []).map((tool) => tool.name),
+      );
+      const promptTitles = new Set(
+        (existingPromptData.prompts ?? []).map((prompt) => prompt.title),
+      );
+      const postTitles = new Set(
+        (existingPostData.posts ?? []).map((post) => post.title),
+      );
+
+      const seedRequest = async (path: string, payload: Record<string, unknown>) => {
+        const response = await fetch(`${API_BASE}${path}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (response.status === 409) {
+          return;
+        }
+
+        if (!response.ok) {
+          const text = await response.text();
+          throw new Error(text || `Request failed: ${response.status}`);
+        }
+      };
+
+      for (const tool of MOCK_TOOLS) {
+        if (toolNames.has(tool.name)) continue;
+        await seedRequest("/api/tools", {
+          name: tool.name,
+          tag: tool.tag,
+          category: tool.category,
+          description: tool.description,
+          price: tool.price,
+          url: tool.url,
+          affiliate_link: tool.affiliate_link,
+          logo_url: tool.logo_url,
+          image_url: tool.image_url,
+          is_featured: tool.is_featured,
+        });
+      }
+
+      for (const prompt of MOCK_PROMPTS) {
+        if (promptTitles.has(prompt.title)) continue;
+        await seedRequest("/api/prompts", {
+          title: prompt.title,
+          category: prompt.category,
+          platforms: prompt.platforms,
+          preview: prompt.preview,
+          prompt: prompt.prompt,
+        });
+      }
+
+      for (const post of MOCK_POSTS) {
+        if (postTitles.has(post.title)) continue;
+        await seedRequest("/api/posts", {
+          title: post.title,
+          excerpt: post.excerpt,
+          tag: post.tag,
+          read_time: post.read_time,
+          published_at: post.published_at,
+          content: post.content,
+        });
+      }
+      await loadAll();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "导入失败，请重试");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#0b1110] text-white">
       <div className="relative overflow-hidden">
@@ -350,16 +508,29 @@ export default function AdminPage() {
                   Posts，直接操作后端 API。
                 </p>
               </div>
-              <button
-                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-6 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-white/70 transition hover:border-white/40 hover:text-white"
-                onClick={loadAll}
-              >
-                刷新数据
-              </button>
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-6 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-white/70 transition hover:border-white/40 hover:text-white"
+                  onClick={loadAll}
+                >
+                  刷新数据
+                </button>
+                <button
+                  className="inline-flex items-center justify-center rounded-full bg-[var(--accent)] px-6 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-[var(--accent-contrast)] transition hover:brightness-110"
+                  onClick={handleSeedMockData}
+                >
+                  导入虚拟数据
+                </button>
+              </div>
             </div>
             {error && (
               <div className="mt-4 rounded-2xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-100">
                 {error}
+              </div>
+            )}
+            {(usingMock.tools || usingMock.prompts || usingMock.posts) && (
+              <div className="mt-4 rounded-2xl border border-amber-300/40 bg-amber-200/10 px-4 py-3 text-sm text-amber-100">
+                数据库暂无数据或未连接，当前显示前端虚拟数据。
               </div>
             )}
             {loading && (
@@ -407,8 +578,10 @@ export default function AdminPage() {
                         </div>
                         <div className="flex items-center gap-2 text-xs">
                           <button
-                            className="rounded-full border border-white/20 px-3 py-1 text-white/70 transition hover:border-white/40"
+                            className={`rounded-full border border-white/20 px-3 py-1 text-white/70 transition hover:border-white/40 ${usingMock.tools ? "cursor-not-allowed opacity-50" : ""}`}
+                            disabled={usingMock.tools}
                             onClick={() => {
+                              if (usingMock.tools) return;
                               setEditingToolId(tool.id);
                               setToolForm({
                                 name: tool.name,
@@ -427,9 +600,12 @@ export default function AdminPage() {
                             编辑
                           </button>
                           <button
-                            className="rounded-full border border-red-400/40 px-3 py-1 text-red-100/80 transition hover:border-red-300"
+                            className={`rounded-full border border-red-400/40 px-3 py-1 text-red-100/80 transition hover:border-red-300 ${usingMock.tools ? "cursor-not-allowed opacity-50" : ""}`}
+                            disabled={usingMock.tools}
                             onClick={() =>
-                              handleDelete(`/api/tools/${tool.id}`, tool.name)
+                              usingMock.tools
+                                ? undefined
+                                : handleDelete(`/api/tools/${tool.id}`, tool.name)
                             }
                           >
                             删除
@@ -592,8 +768,10 @@ export default function AdminPage() {
                         </div>
                         <div className="flex items-center gap-2 text-xs">
                           <button
-                            className="rounded-full border border-white/20 px-3 py-1 text-white/70 transition hover:border-white/40"
+                            className={`rounded-full border border-white/20 px-3 py-1 text-white/70 transition hover:border-white/40 ${usingMock.prompts ? "cursor-not-allowed opacity-50" : ""}`}
+                            disabled={usingMock.prompts}
                             onClick={() => {
+                              if (usingMock.prompts) return;
                               setEditingPromptId(prompt.id);
                               setPromptForm({
                                 title: prompt.title,
@@ -607,12 +785,15 @@ export default function AdminPage() {
                             编辑
                           </button>
                           <button
-                            className="rounded-full border border-red-400/40 px-3 py-1 text-red-100/80 transition hover:border-red-300"
+                            className={`rounded-full border border-red-400/40 px-3 py-1 text-red-100/80 transition hover:border-red-300 ${usingMock.prompts ? "cursor-not-allowed opacity-50" : ""}`}
+                            disabled={usingMock.prompts}
                             onClick={() =>
-                              handleDelete(
-                                `/api/prompts/${prompt.id}`,
-                                prompt.title,
-                              )
+                              usingMock.prompts
+                                ? undefined
+                                : handleDelete(
+                                    `/api/prompts/${prompt.id}`,
+                                    prompt.title,
+                                  )
                             }
                           >
                             删除
@@ -741,8 +922,10 @@ export default function AdminPage() {
                         </div>
                         <div className="flex items-center gap-2 text-xs">
                           <button
-                            className="rounded-full border border-white/20 px-3 py-1 text-white/70 transition hover:border-white/40"
+                            className={`rounded-full border border-white/20 px-3 py-1 text-white/70 transition hover:border-white/40 ${usingMock.posts ? "cursor-not-allowed opacity-50" : ""}`}
+                            disabled={usingMock.posts}
                             onClick={() => {
+                              if (usingMock.posts) return;
                               setEditingPostId(post.id);
                               setPostForm({
                                 title: post.title,
@@ -759,9 +942,12 @@ export default function AdminPage() {
                             编辑
                           </button>
                           <button
-                            className="rounded-full border border-red-400/40 px-3 py-1 text-red-100/80 transition hover:border-red-300"
+                            className={`rounded-full border border-red-400/40 px-3 py-1 text-red-100/80 transition hover:border-red-300 ${usingMock.posts ? "cursor-not-allowed opacity-50" : ""}`}
+                            disabled={usingMock.posts}
                             onClick={() =>
-                              handleDelete(`/api/posts/${post.id}`, post.title)
+                              usingMock.posts
+                                ? undefined
+                                : handleDelete(`/api/posts/${post.id}`, post.title)
                             }
                           >
                             删除

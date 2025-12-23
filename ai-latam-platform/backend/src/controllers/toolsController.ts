@@ -126,6 +126,11 @@ export const createTool = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error('Error creating tool:', error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        return res.status(409).json({ error: 'Tool already exists' });
+      }
+    }
     res.status(500).json({ error: 'Failed to create tool' });
   }
 };
