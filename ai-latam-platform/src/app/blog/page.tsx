@@ -9,6 +9,7 @@ type Post = {
   tag: string;
   readTime: string;
   publishedAt: string;
+  coverImage?: string | null;
 };
 
 const DUMMY_POSTS_TYPED: Post[] = DUMMY_POSTS;
@@ -56,6 +57,7 @@ async function getPosts(): Promise<Post[]> {
       tag: row.tag || "深度测评",
       readTime: row.readTime || row.read_time || "5 Min Read",
       publishedAt: formatPublishedAt(row.published_at),
+      coverImage: (row as { cover_image?: string | null }).cover_image ?? null,
     }));
   } catch {
     return DUMMY_POSTS_TYPED;
@@ -127,6 +129,16 @@ export default async function BlogPage() {
                 key={post.id}
                 className="rounded-2xl bg-[#1a2622] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.45)] transition hover:-translate-y-1"
               >
+                {post.coverImage ? (
+                  <div className="mb-4 overflow-hidden rounded-xl border border-white/10">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={post.coverImage}
+                      alt={post.title}
+                      className="h-40 w-full object-cover"
+                    />
+                  </div>
+                ) : null}
                 <div className="flex items-center justify-between text-xs uppercase tracking-[0.25em] text-white/45">
                   <span>{post.readTime}</span>
                   <span>{post.publishedAt}</span>

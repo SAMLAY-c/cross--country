@@ -57,13 +57,14 @@ model Tool {
 // - created_at: 创建时间，默认当前时间
 
 model Prompt {
-  id        Int      @id @default(autoincrement())
-  title     String   @unique
-  category  String
-  platforms Json     // 存储 ["ChatGPT", "Claude", "Midjourney"]
-  preview   String?
-  prompt    String   @db.Text
-  createdAt DateTime @default(now()) @map("created_at")
+  id         Int      @id @default(autoincrement())
+  title      String   @unique
+  category   String
+  platforms  Json     // 存储 ["ChatGPT", "Claude", "Midjourney"]
+  preview    String?
+  prompt     String   @db.Text
+  coverImage String?  @map("cover_image")
+  createdAt  DateTime @default(now()) @map("created_at")
 
   @@index([category])
   @@index([createdAt])
@@ -89,6 +90,7 @@ model Post {
   readTime     String?  @map("read_time")
   publishedAt  DateTime @default(now()) @map("published_at")
   content      String?  @db.Text
+  coverImage   String?  @map("cover_image")
   createdAt    DateTime @default(now()) @map("created_at")
 
   @@index([tag])

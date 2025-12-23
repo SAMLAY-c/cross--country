@@ -11,6 +11,7 @@ export type PromptItem = {
   platforms: string[];
   preview: string;
   prompt: string;
+  coverImage?: string | null;
 };
 
 type PromptGridProps = {
@@ -48,6 +49,16 @@ export default function PromptGrid({ prompts }: PromptGridProps) {
             }
           }}
         >
+          {prompt.coverImage ? (
+            <div className="mb-5 overflow-hidden rounded-xl border border-white/10">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={prompt.coverImage}
+                alt={prompt.title}
+                className="h-36 w-full object-cover"
+              />
+            </div>
+          ) : null}
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-[0.25em] text-white/55">
               {prompt.category}
@@ -107,6 +118,16 @@ export default function PromptGrid({ prompts }: PromptGridProps) {
             className="w-full max-w-2xl rounded-3xl bg-[#1a2622] p-8 text-white shadow-[0_40px_90px_rgba(0,0,0,0.5)]"
             onClick={(event) => event.stopPropagation()}
           >
+            {activePrompt.coverImage ? (
+              <div className="mb-6 overflow-hidden rounded-2xl border border-white/10">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={activePrompt.coverImage}
+                  alt={activePrompt.title}
+                  className="h-56 w-full object-cover"
+                />
+              </div>
+            ) : null}
             <div className="flex items-start justify-between gap-6">
               <div>
                 <p className="text-xs uppercase tracking-[0.25em] text-white/55">

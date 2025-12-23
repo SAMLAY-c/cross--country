@@ -28,6 +28,7 @@ async function getPrompts(): Promise<PromptItem[]> {
       platforms: Array.isArray(row.platforms) ? row.platforms : [],
       preview: row.preview || row.prompt?.slice(0, 120) || "",
       prompt: row.prompt,
+      coverImage: (row as { cover_image?: string | null }).cover_image ?? null,
     }));
   } catch {
     return DUMMY_PROMPTS_TYPED;

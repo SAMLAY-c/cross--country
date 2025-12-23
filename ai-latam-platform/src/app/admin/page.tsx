@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { DUMMY_POSTS, DUMMY_PROMPTS, DUMMY_TOOLS } from "@/lib/mock-data";
+import ImageUpload from "@/components/image-upload";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
@@ -28,6 +29,7 @@ type Prompt = {
   platforms: string[];
   preview: string | null;
   prompt: string;
+  cover_image: string | null;
   created_at: string;
 };
 
@@ -39,6 +41,7 @@ type Post = {
   read_time: string | null;
   published_at: string;
   content: string | null;
+  cover_image: string | null;
   created_at: string;
 };
 
@@ -61,6 +64,7 @@ type PromptForm = {
   platforms: string;
   preview: string;
   prompt: string;
+  cover_image: string;
 };
 
 type PostForm = {
@@ -70,6 +74,7 @@ type PostForm = {
   read_time: string;
   published_at: string;
   content: string;
+  cover_image: string;
 };
 
 const initialToolForm: ToolForm = {
@@ -91,6 +96,7 @@ const initialPromptForm: PromptForm = {
   platforms: "",
   preview: "",
   prompt: "",
+  cover_image: "",
 };
 
 const initialPostForm: PostForm = {
@@ -100,6 +106,7 @@ const initialPostForm: PostForm = {
   read_time: "",
   published_at: "",
   content: "",
+  cover_image: "",
 };
 
 const MOCK_TOOLS: Tool[] = DUMMY_TOOLS.map((tool) => ({
@@ -119,6 +126,7 @@ const MOCK_TOOLS: Tool[] = DUMMY_TOOLS.map((tool) => ({
 
 const MOCK_PROMPTS: Prompt[] = DUMMY_PROMPTS.map((prompt) => ({
   ...prompt,
+  cover_image: null,
   created_at: new Date().toISOString(),
 }));
 
@@ -146,6 +154,7 @@ const MOCK_POSTS: Post[] = DUMMY_POSTS.map((post) => ({
   read_time: post.readTime ?? null,
   published_at: parseDotDate(post.publishedAt),
   content: null,
+  cover_image: null,
   created_at: new Date().toISOString(),
 }));
 
@@ -332,6 +341,7 @@ export default function AdminPage() {
       platforms: promptPlatforms,
       preview: toOptionalValue(promptForm.preview),
       prompt: promptForm.prompt.trim(),
+      cover_image: toOptionalValue(promptForm.cover_image),
     };
 
     if (payload.platforms.length === 0) {
@@ -372,6 +382,7 @@ export default function AdminPage() {
       read_time: toOptionalValue(postForm.read_time),
       published_at: toIsoDate(postForm.published_at),
       content: toOptionalValue(postForm.content),
+      cover_image: toOptionalValue(postForm.cover_image),
     };
 
     try {
@@ -689,6 +700,28 @@ export default function AdminPage() {
                       }))
                     }
                   />
+                  <div className="space-y-4 rounded-2xl border border-white/10 bg-black/20 p-3">
+                    <ImageUpload
+                      label="Logo"
+                      value={toolForm.logo_url}
+                      onChange={(url) =>
+                        setToolForm((prev) => ({
+                          ...prev,
+                          logo_url: url,
+                        }))
+                      }
+                    />
+                    <ImageUpload
+                      label="Cover Image"
+                      value={toolForm.image_url}
+                      onChange={(url) =>
+                        setToolForm((prev) => ({
+                          ...prev,
+                          image_url: url,
+                        }))
+                      }
+                    />
+                  </div>
                   <textarea
                     className="min-h-[88px] w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
                     placeholder="description"
@@ -779,6 +812,7 @@ export default function AdminPage() {
                                 platforms: prompt.platforms.join(", "),
                                 preview: prompt.preview ?? "",
                                 prompt: prompt.prompt ?? "",
+                                cover_image: prompt.cover_image ?? "",
                               });
                             }}
                           >
@@ -852,6 +886,16 @@ export default function AdminPage() {
                       setPromptForm((prev) => ({
                         ...prev,
                         preview: event.target.value,
+                      }))
+                    }
+                  />
+                  <ImageUpload
+                    label="Cover Image"
+                    value={promptForm.cover_image}
+                    onChange={(url) =>
+                      setPromptForm((prev) => ({
+                        ...prev,
+                        cover_image: url,
                       }))
                     }
                   />
@@ -936,6 +980,7 @@ export default function AdminPage() {
                                   post.published_at,
                                 ),
                                 content: post.content ?? "",
+                                cover_image: post.cover_image ?? "",
                               });
                             }}
                           >
@@ -1006,6 +1051,16 @@ export default function AdminPage() {
                       setPostForm((prev) => ({
                         ...prev,
                         published_at: event.target.value,
+                      }))
+                    }
+                  />
+                  <ImageUpload
+                    label="Cover Image"
+                    value={postForm.cover_image}
+                    onChange={(url) =>
+                      setPostForm((prev) => ({
+                        ...prev,
+                        cover_image: url,
                       }))
                     }
                   />

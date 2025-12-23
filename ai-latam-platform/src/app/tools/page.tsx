@@ -10,6 +10,8 @@ type Tool = {
   description: string;
   price: string;
   url?: string | null;
+  logoUrl?: string | null;
+  imageUrl?: string | null;
 };
 
 const DUMMY_TOOLS_TYPED: Tool[] = DUMMY_TOOLS;
@@ -26,15 +28,27 @@ function ToolCard({
   description,
   price,
   url,
+  imageUrl,
 }: {
   name: string;
   tag: string;
   description: string;
   price: string;
   url?: string | null;
+  imageUrl?: string | null;
 }) {
   return (
     <article className="group rounded-2xl bg-[#1a2622] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.45)] transition duration-300 hover:-translate-y-1 hover:bg-[#212f2a]">
+      {imageUrl ? (
+        <div className="mb-6 overflow-hidden rounded-xl border border-white/10">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={imageUrl}
+            alt={name}
+            className="h-40 w-full object-cover"
+          />
+        </div>
+      ) : null}
       <div className="flex items-start gap-5">
         <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/5 shadow-[0_10px_24px_rgba(0,0,0,0.25)]">
           <span className="text-xl font-semibold text-white/70">
@@ -104,6 +118,8 @@ async function getTools(): Promise<Tool[]> {
       description: row.description || "暂无描述。",
       price: row.price || "付费",
       url: row.url ?? null,
+      logoUrl: row.logo_url ?? null,
+      imageUrl: row.image_url ?? null,
     }));
   } catch {
     return DUMMY_TOOLS_TYPED;

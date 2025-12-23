@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS prompts (
   platforms JSONB NOT NULL DEFAULT '[]'::jsonb,
   preview TEXT,
   prompt TEXT NOT NULL,
+  cover_image VARCHAR(500),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -56,6 +57,7 @@ CREATE TABLE IF NOT EXISTS posts (
   read_time VARCHAR(50),
   published_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
   content TEXT,
+  cover_image VARCHAR(500),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 

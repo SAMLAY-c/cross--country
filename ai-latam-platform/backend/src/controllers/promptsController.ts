@@ -9,6 +9,7 @@ interface CreatePromptBody {
   platforms: string[];
   preview?: string;
   prompt: string;
+  cover_image?: string;
 }
 
 // GET /api/prompts - 获取所有提示词
@@ -37,6 +38,7 @@ export const getAllPrompts = async (req: Request, res: Response) => {
         platforms: prompt.platforms as unknown as string[],
         preview: prompt.preview,
         prompt: prompt.prompt,
+        cover_image: prompt.coverImage,
         created_at: prompt.createdAt.toISOString(),
       })),
     };
@@ -75,6 +77,7 @@ export const getPromptById = async (req: Request, res: Response) => {
       platforms: prompt.platforms as unknown as string[],
       preview: prompt.preview,
       prompt: prompt.prompt,
+      cover_image: prompt.coverImage,
       created_at: prompt.createdAt.toISOString(),
     });
   } catch (error) {
@@ -87,7 +90,14 @@ export const getPromptById = async (req: Request, res: Response) => {
 export const createPrompt = async (req: Request, res: Response) => {
   try {
     // 显式解构并重命名 body 中的 prompt 字段，避免变量名混淆
-    const { title, category, platforms, preview, prompt: promptContent } = req.body as CreatePromptBody;
+    const {
+      title,
+      category,
+      platforms,
+      preview,
+      prompt: promptContent,
+      cover_image,
+    } = req.body as CreatePromptBody & { cover_image?: string };
 
     if (!title || !category || !promptContent) {
       return res.status(400).json({ error: 'title, category and prompt are required' });
@@ -104,6 +114,7 @@ export const createPrompt = async (req: Request, res: Response) => {
         platforms,
         preview: preview || '', // 处理可能为 undefined 的情况
         prompt: promptContent,
+        coverImage: cover_image,
       },
     });
 
@@ -114,6 +125,7 @@ export const createPrompt = async (req: Request, res: Response) => {
       platforms: newPrompt.platforms as unknown as string[],
       preview: newPrompt.preview,
       prompt: newPrompt.prompt,
+      cover_image: newPrompt.coverImage,
       created_at: newPrompt.createdAt.toISOString(),
     });
   } catch (error) {
@@ -130,7 +142,7 @@ export const createPrompt = async (req: Request, res: Response) => {
 // PUT /api/prompts/:id - 更新提示词
 export const updatePrompt = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { title, category, platforms, preview, prompt: promptContent } = req.body;
+  const { title, category, platforms, preview, prompt: promptContent, cover_image } = req.body;
   const promptId = Number(id);
 
   if (isNaN(promptId)) {
@@ -149,6 +161,7 @@ export const updatePrompt = async (req: Request, res: Response) => {
     if (platforms) updateData.platforms = platforms;
     if (preview !== undefined) updateData.preview = preview;
     if (promptContent) updateData.prompt = promptContent;
+    if (cover_image !== undefined) updateData.coverImage = cover_image;
 
     const updatedPrompt = await prisma.prompt.update({
       where: { id: promptId },
@@ -162,6 +175,7 @@ export const updatePrompt = async (req: Request, res: Response) => {
       platforms: updatedPrompt.platforms as unknown as string[],
       preview: updatedPrompt.preview,
       prompt: updatedPrompt.prompt,
+      cover_image: updatedPrompt.coverImage,
       created_at: updatedPrompt.createdAt.toISOString(),
     });
   } catch (error) {

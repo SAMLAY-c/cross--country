@@ -23,6 +23,7 @@ export const getAllPosts = async (req: Request, res: Response) => {
         tag: post.tag,
         read_time: post.readTime,
         published_at: post.publishedAt,
+        cover_image: post.coverImage,
         content: post.content,
         created_at: post.createdAt.toISOString(),
       })),
@@ -55,6 +56,7 @@ export const getPostById = async (req: Request, res: Response) => {
       tag: post.tag,
       read_time: post.readTime,
       published_at: post.publishedAt,
+      cover_image: post.coverImage,
       content: post.content,
       created_at: post.createdAt.toISOString(),
     });
@@ -73,6 +75,7 @@ export const createPost = async (req: Request, res: Response) => {
       tag,
       read_time,
       published_at,
+      cover_image,
       content,
     } = req.body;
 
@@ -87,6 +90,7 @@ export const createPost = async (req: Request, res: Response) => {
         tag,
         readTime: read_time,
         publishedAt: published_at,
+        coverImage: cover_image,
         content,
       },
     });
@@ -98,6 +102,7 @@ export const createPost = async (req: Request, res: Response) => {
       tag: post.tag,
       read_time: post.readTime,
       published_at: post.publishedAt,
+      cover_image: post.coverImage,
       content: post.content,
       created_at: post.createdAt.toISOString(),
     });
@@ -117,6 +122,7 @@ export const updatePost = async (req: Request, res: Response) => {
       tag,
       read_time,
       published_at,
+      cover_image,
       content,
     } = req.body;
 
@@ -126,6 +132,7 @@ export const updatePost = async (req: Request, res: Response) => {
     if (tag !== undefined) updateData.tag = tag;
     if (read_time !== undefined) updateData.readTime = read_time;
     if (published_at) updateData.publishedAt = published_at;
+    if (cover_image !== undefined) updateData.coverImage = cover_image;
     if (content !== undefined) updateData.content = content;
 
     const post = await prisma.post.update({
@@ -140,6 +147,7 @@ export const updatePost = async (req: Request, res: Response) => {
       tag: post.tag,
       read_time: post.readTime,
       published_at: post.publishedAt,
+      cover_image: post.coverImage,
       content: post.content,
       created_at: post.createdAt.toISOString(),
     });
