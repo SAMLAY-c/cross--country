@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Space_Grotesk } from "next/font/google";
+import { Fraunces, Manrope, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
 const displayFont = Fraunces({
@@ -10,6 +10,12 @@ const displayFont = Fraunces({
 
 const bodyFont = Space_Grotesk({
   variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const ecoFont = Manrope({
+  variable: "--font-eco",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
@@ -26,7 +32,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${displayFont.variable} ${bodyFont.variable} antialiased`}>
+      <body
+        className={`${displayFont.variable} ${bodyFont.variable} ${ecoFont.variable} antialiased`}
+      >
         {children}
       </body>
     </html>
