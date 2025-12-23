@@ -5,8 +5,7 @@ type NavProps = {
   currentPath?: "/tools" | "/prompts" | "/blog" | "/";
 };
 
-const linkBase =
-  "hidden sm:inline transition hover:text-amber-100";
+const linkBase = "hidden sm:inline transition hover:text-amber-100";
 
 export default function Nav({ currentPath }: NavProps) {
   return (
@@ -16,19 +15,19 @@ export default function Nav({ currentPath }: NavProps) {
           AI LATAM Platform
         </span>
         <Link
-          className={`${linkBase} ${currentPath === "/tools" ? "text-[#ccff00]" : ""}`}
+          className={`${linkBase} ${currentPath === "/tools" ? "text-[var(--accent)]" : ""}`}
           href="/tools"
         >
           工具目录
         </Link>
         <Link
-          className={`${linkBase} ${currentPath === "/prompts" ? "text-[#ccff00]" : ""}`}
+          className={`${linkBase} ${currentPath === "/prompts" ? "text-[var(--accent)]" : ""}`}
           href="/prompts"
         >
           提示词广场
         </Link>
         <Link
-          className={`${linkBase} ${currentPath === "/blog" ? "text-[#ccff00]" : ""}`}
+          className={`${linkBase} ${currentPath === "/blog" ? "text-[var(--accent)]" : ""}`}
           href="/blog"
         >
           Blog
@@ -38,7 +37,7 @@ export default function Nav({ currentPath }: NavProps) {
       </div>
       <div className="flex items-center gap-3">
         <ThemeToggle />
-        <button className="rounded-md bg-[#ccff00] px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#0d1714] transition hover:bg-[#d7ff33] hover:shadow-[0_10px_30px_rgba(204,255,0,0.35)]">
+        <button className="rounded-md bg-[var(--accent)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-contrast)] transition hover:brightness-110 hover:shadow-[0_10px_30px_var(--accent-glow)]">
           获取指南
         </button>
       </div>

@@ -95,7 +95,14 @@ export default async function PromptSquarePage() {
   const prompts = await getPrompts();
 
   return (
-    <div className="min-h-screen bg-[#0d1714] text-white [font-family:var(--font-eco)]">
+    <div
+      className="min-h-screen bg-[#0d1714] text-white [font-family:var(--font-eco)]"
+      style={{
+        ["--accent" as unknown as string]: "#d6ff3a",
+        ["--accent-glow" as unknown as string]: "rgba(214,255,58,0.35)",
+        ["--accent-contrast" as unknown as string]: "#0d1714",
+      }}
+    >
       <div className="relative overflow-hidden bg-[#0d1714]">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(175,210,200,0.18),transparent_60%),radial-gradient(circle_at_15%_10%,rgba(90,150,138,0.22),transparent_55%),radial-gradient(circle_at_85%_25%,rgba(255,210,152,0.2),transparent_45%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(12,22,18,0.2),rgba(8,12,10,0.62))]" />
@@ -111,29 +118,39 @@ export default async function PromptSquarePage() {
           <div className="relative min-h-[85vh] px-8 pb-14 pt-10 sm:px-12 lg:px-20">
             <Nav currentPath="/prompts" />
 
-            <div className="mt-16 grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
+            <div className="mt-12 grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
               <div className="space-y-8 text-left">
                 <p className="text-xs font-semibold uppercase tracking-[0.4em] text-white/60">
                   提示词广场
                 </p>
                 <h1 className="text-5xl font-extrabold leading-[1.05] sm:text-6xl lg:text-7xl [font-family:var(--font-display)] text-transparent bg-clip-text bg-[linear-gradient(180deg,#ffffff_0%,#b4bcbc_100%)]">
-                  一键复制<span className="text-[#ccff00]">提示词</span>，
+                  一键复制<span className="text-[var(--accent)]">提示词</span>，
                   直接用于销售、创作与自动化。
                 </h1>
                 <p className="max-w-2xl text-base text-white/60 sm:text-lg leading-relaxed">
                   每条提示词都针对特定平台优化。复制即可使用。
                 </p>
-                <div className="flex flex-wrap gap-3">
-                  {["营销", "产品", "广告", "社媒", "创意"].map(
-                    (pill) => (
-                      <span
-                        key={pill}
-                        className="rounded-md bg-white/8 px-4 py-2 text-xs uppercase tracking-[0.25em] text-white/70 transition hover:bg-white/14"
-                      >
-                        {pill}
-                      </span>
-                    )
-                  )}
+                <div className="mt-10 flex flex-wrap gap-3">
+                  {[
+                    { label: "全部", active: true },
+                    { label: "营销", active: false },
+                    { label: "产品", active: false },
+                    { label: "广告", active: false },
+                    { label: "社媒", active: false },
+                    { label: "创意", active: false },
+                  ].map((item, index) => (
+                    <button
+                      key={item.label}
+                      className={`rounded-full px-6 py-2.5 text-sm transition-all duration-300 border ${
+                        index === 0
+                          ? "bg-[var(--accent)] text-[var(--accent-contrast)] border-[var(--accent)] shadow-[0_0_15px_var(--accent-glow)] font-bold"
+                          : "bg-white/5 text-white/60 border-white/10 hover:bg-white/10 hover:text-white hover:border-white/30"
+                      }`}
+                      type="button"
+                    >
+                      {item.label}
+                    </button>
+                  ))}
                 </div>
               </div>
               <div className="rounded-3xl bg-[#17221e] p-8 shadow-[0_30px_70px_rgba(0,0,0,0.4)]">

@@ -4,7 +4,14 @@ import Nav from "@/components/nav";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#0d1714] text-white [font-family:var(--font-eco)]">
+    <div
+      className="min-h-screen bg-[#0d1714] text-white [font-family:var(--font-eco)]"
+      style={{
+        ["--accent" as unknown as string]: "#ccff00",
+        ["--accent-glow" as unknown as string]: "rgba(204,255,0,0.35)",
+        ["--accent-contrast" as unknown as string]: "#0d1714",
+      }}
+    >
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(175,210,200,0.18),transparent_60%),radial-gradient(circle_at_15%_10%,rgba(90,150,138,0.22),transparent_55%),radial-gradient(circle_at_85%_25%,rgba(255,210,152,0.2),transparent_45%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(12,22,18,0.2),rgba(8,12,10,0.62))]" />
@@ -19,7 +26,7 @@ export default function Home() {
                 首页
               </p>
               <h1 className="text-5xl font-extrabold leading-[1.05] sm:text-6xl lg:text-7xl [font-family:var(--font-display)] text-transparent bg-clip-text bg-[linear-gradient(180deg,#ffffff_0%,#b4bcbc_100%)]">
-                中文<span className="text-[#ccff00]">AI 平台</span>，
+                中文<span className="text-[var(--accent)]">AI 平台</span>，
                 为增长与效率而生。
               </h1>
               <p className="max-w-2xl text-base text-white/60 sm:text-lg leading-relaxed">
@@ -41,7 +48,7 @@ export default function Home() {
               <div className="flex flex-wrap gap-4">
                 <Link
                   href="/tools"
-                  className="rounded-md bg-[#ccff00] px-6 py-3 text-sm font-semibold text-[#0d1714] transition hover:bg-[#d7ff33] hover:shadow-[0_12px_30px_rgba(204,255,0,0.35)]"
+                  className="rounded-md bg-[var(--accent)] px-6 py-3 text-sm font-semibold text-[var(--accent-contrast)] transition hover:brightness-110 hover:shadow-[0_12px_30px_var(--accent-glow)]"
                 >
                   进入工具目录
                 </Link>
@@ -110,7 +117,7 @@ export default function Home() {
                 Insights
               </p>
               <h2 className="text-4xl font-extrabold leading-tight sm:text-5xl [font-family:var(--font-display)]">
-                <span className="text-[#ccff00]">INSIGHTS.</span> 记录 AI 的每一次进化。
+                <span className="text-[var(--accent)]">INSIGHTS.</span> 记录 AI 的每一次进化。
               </h2>
               <p className="max-w-2xl text-sm text-white/55 sm:text-base leading-relaxed">
                 深度测评、提示词拆解、工具对比。内容以可落地为先，持续更新。
@@ -122,7 +129,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-[url('/eco-hero.jpg')] bg-cover bg-center opacity-90" />
                 <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(5,10,8,0.25),rgba(5,10,8,0.65))]" />
                 <div className="relative flex min-h-[320px] items-end p-6 sm:p-8">
-                  <span className="rounded-md bg-[#ccff00] px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-[#0d1714]">
+                  <span className="rounded-md bg-[var(--accent)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--accent-contrast)]">
                     深度测评
                   </span>
                 </div>
@@ -133,7 +140,7 @@ export default function Home() {
                   <span>2025.12.23</span>
                 </div>
                 <h3 className="text-3xl font-extrabold leading-tight text-white">
-                  Midjourney V6 <span className="text-[#ccff00]">提示词工程</span> 全面指南
+                  Midjourney V6 <span className="text-[var(--accent)]">提示词工程</span> 全面指南
                 </h3>
                 <p className="text-sm text-white/60 leading-relaxed">
                   从光影控制到材质渲染，深入解析 V6 的底层逻辑与实战案例，让作品更像电影。
@@ -168,7 +175,7 @@ export default function Home() {
                   className="rounded-2xl bg-[#1a2622] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.4)] transition hover:-translate-y-1"
                 >
                   <div className="aspect-video rounded-xl bg-[#202d28]"></div>
-                  <h4 className="mt-4 text-lg font-semibold text-white transition group-hover:text-[#ccff00]">
+                  <h4 className="mt-4 text-lg font-semibold text-white transition group-hover:text-[var(--accent)]">
                     {title}
                   </h4>
                 </article>
@@ -186,7 +193,7 @@ export default function Home() {
                   glass panels, cinematic lighting --v 6.0
                 </p>
               </div>
-              <button className="mt-4 inline-flex items-center gap-2 rounded-md bg-[#ccff00] px-4 py-2 text-sm font-semibold text-[#0d1714] transition hover:bg-[#d7ff33] hover:shadow-[0_12px_30px_rgba(204,255,0,0.35)]">
+              <button className="mt-4 inline-flex items-center gap-2 rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--accent-contrast)] transition hover:brightness-110 hover:shadow-[0_12px_30px_var(--accent-glow)]">
                 复制提示词
               </button>
             </div>

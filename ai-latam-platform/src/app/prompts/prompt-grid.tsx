@@ -76,10 +76,10 @@ export default function PromptGrid({ prompts }: PromptGridProps) {
                 handleCopy(prompt.prompt, prompt.id);
               }}
               className={clsx(
-                "inline-flex items-center gap-2 rounded-md bg-[#ccff00] px-4 py-2 text-sm font-semibold text-[#0d1714] transition",
+                "inline-flex items-center gap-2 rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--accent-contrast)] transition",
                 copiedId === prompt.id
-                  ? "bg-[#e0ff66] text-[#0d1714]"
-                  : "hover:bg-[#d7ff33] hover:shadow-[0_12px_30px_rgba(204,255,0,0.35)]"
+                  ? "bg-[var(--accent)] text-[var(--accent-contrast)]"
+                  : "hover:brightness-110 hover:shadow-[0_12px_30px_var(--accent-glow)]"
               )}
             >
               {copiedId === prompt.id ? "已复制" : "复制"}
@@ -118,7 +118,7 @@ export default function PromptGrid({ prompts }: PromptGridProps) {
               </div>
               <button
                 onClick={() => setActivePrompt(null)}
-                className="rounded-md bg-[#ccff00] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#0d1714] transition hover:bg-[#d7ff33]"
+                className="rounded-md bg-[var(--accent)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-contrast)] transition hover:brightness-110"
               >
                 关闭
               </button>
@@ -158,10 +158,10 @@ export default function PromptGrid({ prompts }: PromptGridProps) {
               <button
                 onClick={() => handleCopy(activePrompt.prompt, activePrompt.id)}
                 className={clsx(
-                "inline-flex items-center gap-2 rounded-md bg-[#ccff00] px-4 py-2 text-sm font-semibold text-[#0d1714] transition",
+                "inline-flex items-center gap-2 rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--accent-contrast)] transition",
                 copiedId === activePrompt.id
-                  ? "bg-[#e0ff66] text-[#0d1714]"
-                    : "hover:bg-[#d7ff33] hover:shadow-[0_12px_30px_rgba(204,255,0,0.35)]"
+                  ? "bg-[var(--accent)] text-[var(--accent-contrast)]"
+                    : "hover:brightness-110 hover:shadow-[0_12px_30px_var(--accent-glow)]"
               )}
               >
                 {copiedId === activePrompt.id ? "已复制" : "复制提示词"}

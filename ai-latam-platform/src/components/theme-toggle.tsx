@@ -30,7 +30,7 @@ export default function ThemeToggle() {
       className={clsx(
         "inline-flex h-9 w-9 items-center justify-center rounded-md bg-white/10 text-white transition",
         isBright
-          ? "bg-[#ccff00] text-[#0d1714] shadow-[0_8px_24px_rgba(204,255,0,0.35)]"
+          ? "bg-[var(--accent)] text-[var(--accent-contrast)] shadow-[0_8px_24px_var(--accent-glow)]"
           : "hover:bg-white/20"
       )}
     >
