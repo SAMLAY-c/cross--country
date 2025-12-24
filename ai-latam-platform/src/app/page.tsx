@@ -4,18 +4,18 @@ import Nav from "@/components/nav";
 export default function Home() {
   return (
     <div
-      className="min-h-screen bg-[#050807] text-white [font-family:var(--font-body)]"
+      className="min-h-screen bg-[#0a0a0a] text-[#a1a1aa] [font-family:var(--font-body)]"
       style={{
-        ["--accent" as unknown as string]: "#ccff00",
-        ["--accent-glow" as unknown as string]: "rgba(204,255,0,0.4)",
-        ["--accent-contrast" as unknown as string]: "#050807",
+        ["--accent" as unknown as string]: "#d4ff00",
+        ["--accent-glow" as unknown as string]: "rgba(212,255,0,0.4)",
+        ["--accent-contrast" as unknown as string]: "#0a0a0a",
       }}
     >
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(146,255,199,0.15),transparent_40%),radial-gradient(circle_at_85%_20%,rgba(204,255,0,0.18),transparent_45%),radial-gradient(circle_at_30%_85%,rgba(120,190,255,0.12),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(160deg,rgba(5,8,7,0.2),rgba(4,6,5,0.9))]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(212,255,0,0.12),transparent_45%),radial-gradient(circle_at_85%_20%,rgba(0,255,148,0.12),transparent_45%),radial-gradient(circle_at_30%_85%,rgba(120,190,255,0.1),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(160deg,rgba(10,10,10,0.2),rgba(0,0,0,0.9))]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:24px_24px] opacity-60" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(204,255,0,0.06),transparent_30%,transparent_70%,rgba(204,255,0,0.06))] mix-blend-screen" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(212,255,0,0.06),transparent_30%,transparent_70%,rgba(212,255,0,0.06))] mix-blend-screen" />
         <main className="relative w-full flex min-h-screen flex-col gap-20 px-6 pb-24 pt-8 sm:px-10 lg:px-20">
           <Nav currentPath="/" />
 
@@ -27,8 +27,9 @@ export default function Home() {
               <p className="text-xs font-semibold uppercase tracking-[0.5em] text-white/50">
                 DIGITAL ALCHEMIST
               </p>
-              <h1 className="text-5xl font-semibold leading-[1.05] sm:text-6xl lg:text-7xl [font-family:var(--font-display)] text-transparent bg-clip-text bg-[linear-gradient(180deg,#f4fff7_0%,#a1b2ab_100%)]">
-                以 AI 重塑个体创造力，
+              <h1 className="text-5xl font-semibold leading-[1.05] sm:text-6xl lg:text-7xl [font-family:var(--font-display)] text-white">
+                以 <span className="text-accent-gradient">AI</span>{" "}
+                <span className="text-accent-gradient">重塑个体创造力</span>，
                 <span className="text-[var(--accent)]">打造你的数字化第二大脑。</span>
               </h1>
               <p className="max-w-2xl text-base text-white/65 sm:text-lg leading-relaxed">
@@ -56,7 +57,7 @@ export default function Home() {
               </div>
             </div>
             <div className="space-y-6">
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_24px_60px_rgba(0,0,0,0.5)]">
+              <div className="rounded-3xl border border-[#333333] bg-white/[0.03] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.5)] backdrop-blur-[10px]">
                 <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-white/50">
                   <span>BOOT SEQUENCE</span>
                   <span className="text-[var(--accent)]">99%</span>
@@ -71,8 +72,8 @@ export default function Home() {
                   <p>Sync complete. Ready to launch.</p>
                 </div>
               </div>
-              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0b1110] p-8">
-                <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(204,255,0,0.15)_0%,transparent_55%)]" />
+              <div className="relative overflow-hidden rounded-3xl border border-[#333333] bg-white/[0.03] p-8 backdrop-blur-[10px]">
+                <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(212,255,0,0.15)_0%,transparent_55%)]" />
                 <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.04),rgba(0,0,0,0))]" />
                 <div className="relative space-y-4">
                   <p className="text-xs uppercase tracking-[0.4em] text-white/50">
@@ -89,7 +90,7 @@ export default function Home() {
 
           <section
             id="stack"
-            className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-[0_30px_80px_rgba(0,0,0,0.5)]"
+            className="rounded-3xl border border-[#333333] bg-white/[0.03] p-8 shadow-[0_30px_80px_rgba(0,0,0,0.5)] backdrop-blur-[10px]"
           >
             <div className="flex flex-wrap items-end justify-between gap-6">
               <div className="space-y-3">
@@ -107,7 +108,7 @@ export default function Home() {
                 HOVER TO SPARK
               </span>
             </div>
-            <div className="mt-8 overflow-hidden rounded-2xl border border-white/10 bg-black/40 py-4">
+            <div className="mt-8 overflow-hidden rounded-2xl border border-[#333333] bg-[#121212]/70 py-4">
               <div className="marquee flex items-center gap-8 px-6">
                 {[
                   "Midjourney",
@@ -125,7 +126,7 @@ export default function Home() {
                 ].map((tool) => (
                   <span
                     key={tool}
-                    className="rounded-full border border-white/10 px-5 py-2 text-xs uppercase tracking-[0.25em] text-white/55 transition hover:border-[var(--accent)] hover:text-[var(--accent)] hover:shadow-[0_0_15px_var(--accent-glow)]"
+                    className="rounded-full border border-[#333333] px-5 py-2 text-xs uppercase tracking-[0.25em] text-white/55 transition hover:border-[var(--accent)] hover:text-[var(--accent)] hover:shadow-[0_0_15px_var(--accent-glow)]"
                   >
                     {tool}
                   </span>
@@ -146,7 +147,7 @@ export default function Home() {
                 ].map((tool) => (
                   <span
                     key={`${tool}-dup`}
-                    className="rounded-full border border-white/10 px-5 py-2 text-xs uppercase tracking-[0.25em] text-white/55 transition hover:border-[var(--accent)] hover:text-[var(--accent)] hover:shadow-[0_0_15px_var(--accent-glow)]"
+                    className="rounded-full border border-[#333333] px-5 py-2 text-xs uppercase tracking-[0.25em] text-white/55 transition hover:border-[var(--accent)] hover:text-[var(--accent)] hover:shadow-[0_0_15px_var(--accent-glow)]"
                   >
                     {tool}
                   </span>
@@ -194,7 +195,7 @@ export default function Home() {
               ].map((item) => (
                 <article
                   key={item.title}
-                  className="snap-center min-w-[260px] max-w-sm rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_18px_50px_rgba(0,0,0,0.45)] backdrop-blur"
+                  className="snap-center min-w-[260px] max-w-sm rounded-3xl border border-[#333333] bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.45)] backdrop-blur-[10px]"
                 >
                   <p className="text-xs uppercase tracking-[0.35em] text-[var(--accent)]">
                     {item.label}
@@ -215,7 +216,7 @@ export default function Home() {
 
           <section
             id="method"
-            className="grid gap-10 rounded-3xl border border-white/10 bg-[#0b1110]/70 p-10 lg:grid-cols-[0.9fr_1.1fr]"
+            className="grid gap-10 rounded-3xl border border-[#333333] bg-[#121212]/70 p-10 lg:grid-cols-[0.9fr_1.1fr]"
           >
             <div className="relative flex items-center justify-center">
               <div className="orb-container relative h-64 w-64">
@@ -251,7 +252,7 @@ export default function Home() {
                 ].map((item) => (
                   <div
                     key={item.step}
-                    className="rounded-2xl border border-white/10 bg-white/5 p-5"
+                    className="rounded-2xl border border-[#333333] bg-white/[0.03] p-5 backdrop-blur-[10px]"
                   >
                     <div className="flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-white/50">
                       <span className="text-[var(--accent)]">{item.step}</span>
@@ -299,7 +300,7 @@ export default function Home() {
               ].map((item, index) => (
                 <div
                   key={item.prompt}
-                  className="rounded-2xl border border-white/10 bg-white/5 p-6"
+                  className="rounded-2xl border border-[#333333] bg-white/[0.03] p-6 backdrop-blur-[10px]"
                 >
                   <p className="text-xs uppercase tracking-[0.35em] text-white/40">
                     Prompt {index + 1}
@@ -320,7 +321,7 @@ export default function Home() {
 
           <section
             id="contact"
-            className="grid gap-10 rounded-3xl border border-white/10 bg-black/60 p-10 lg:grid-cols-[1.1fr_0.9fr]"
+            className="grid gap-10 rounded-3xl border border-[#333333] bg-[#121212]/70 p-10 lg:grid-cols-[1.1fr_0.9fr]"
           >
             <div className="space-y-6">
               <p className="text-xs font-semibold uppercase tracking-[0.5em] text-white/50">
@@ -336,7 +337,7 @@ export default function Home() {
                 <input
                   type="email"
                   placeholder="16629076367@163.com"
-                  className="w-full max-w-xs border-b border-white/30 bg-transparent pb-2 text-sm text-white/70 placeholder:text-white/30 focus:border-[var(--accent)] focus:text-white focus:outline-none"
+                  className="w-full max-w-xs border-b border-[#333333] bg-transparent pb-2 text-sm text-white/70 placeholder:text-white/30 focus:border-[var(--accent)] focus:text-white focus:outline-none"
                 />
                 <button className="rounded-md bg-[var(--accent)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--accent-contrast)] transition hover:brightness-110 hover:shadow-[0_12px_30px_var(--accent-glow)]">
                   加入通讯录
@@ -346,7 +347,7 @@ export default function Home() {
             <div className="relative flex items-center justify-center">
               <div className="logo-orbit relative h-56 w-56">
                 <div className="absolute inset-0 rounded-full border border-[var(--accent)]/60 shadow-[0_0_40px_var(--accent-glow)]" />
-                <div className="absolute inset-8 rounded-full border border-white/20" />
+                <div className="absolute inset-8 rounded-full border border-[#333333]" />
                 <div className="absolute inset-[5.5rem] rounded-full bg-[var(--accent)] shadow-[0_0_30px_var(--accent-glow)]" />
               </div>
             </div>

@@ -7,8 +7,8 @@ export default function RealtimeFeaturedPost() {
   const featured = posts[0];
 
   return (
-    <div className="relative w-full aspect-video overflow-hidden rounded-2xl border border-white/10 bg-[#151a18]">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1f2937] via-[#0d1714] to-[#000000]" />
+    <div className="relative w-full aspect-video overflow-hidden rounded-2xl border border-[#333333] bg-[#121212]">
+      <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#0a0a0a] to-[#000000]" />
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.35),rgba(0,0,0,0.9))]" />
       {featured?.coverImage ? (
         // eslint-disable-next-line @next/next/no-img-element

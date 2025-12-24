@@ -38,7 +38,7 @@ export default function PromptGrid({ prompts }: PromptGridProps) {
         {prompts.map((prompt) => (
         <article
           key={prompt.id}
-          className="group cursor-pointer rounded-2xl bg-[#1a2622] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.45)] transition duration-300 hover:-translate-y-1 hover:bg-[#212f2a]"
+          className="group cursor-pointer rounded-2xl border border-[#333333] bg-white/[0.03] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.45)] backdrop-blur-[10px] transition duration-300 hover:-translate-y-1 hover:bg-white/[0.06]"
           role="button"
           tabIndex={0}
           onClick={() => setActivePrompt(prompt)}
@@ -50,7 +50,7 @@ export default function PromptGrid({ prompts }: PromptGridProps) {
           }}
         >
           {prompt.coverImage ? (
-            <div className="mb-5 overflow-hidden rounded-xl border border-white/10">
+            <div className="mb-5 overflow-hidden rounded-xl border border-[#333333]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={prompt.coverImage}
@@ -115,11 +115,11 @@ export default function PromptGrid({ prompts }: PromptGridProps) {
           onClick={() => setActivePrompt(null)}
         >
           <div
-            className="w-full max-w-2xl rounded-3xl bg-[#1a2622] p-8 text-white shadow-[0_40px_90px_rgba(0,0,0,0.5)]"
+            className="w-full max-w-2xl rounded-3xl border border-[#333333] bg-[#121212] p-8 text-white shadow-[0_40px_90px_rgba(0,0,0,0.5)]"
             onClick={(event) => event.stopPropagation()}
           >
             {activePrompt.coverImage ? (
-              <div className="mb-6 overflow-hidden rounded-2xl border border-white/10">
+              <div className="mb-6 overflow-hidden rounded-2xl border border-[#333333]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={activePrompt.coverImage}
@@ -157,7 +157,7 @@ export default function PromptGrid({ prompts }: PromptGridProps) {
             </div>
 
             <div className="mt-6 space-y-4 text-sm text-white/85">
-              <div className="rounded-2xl bg-[#202d28] p-5">
+              <div className="rounded-2xl bg-[#1a1a1a] p-5">
                 <p className="text-xs uppercase tracking-[0.2em] text-white/60">
                   效果预览
                 </p>
@@ -165,7 +165,7 @@ export default function PromptGrid({ prompts }: PromptGridProps) {
                   {activePrompt.preview}
                 </p>
               </div>
-              <div className="rounded-2xl bg-[#202d28] p-5">
+              <div className="rounded-2xl bg-[#1a1a1a] p-5">
                 <p className="text-xs uppercase tracking-[0.2em] text-white/60">
                   提示词
                 </p>

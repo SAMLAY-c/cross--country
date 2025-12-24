@@ -2,8 +2,8 @@ import { ExternalLink } from "lucide-react";
 import clsx from "clsx";
 
 const priceBadgeStyles: Record<string, string> = {
-  "免费试用": "bg-emerald-200/90 text-emerald-950",
-  "免费增值": "bg-emerald-200/90 text-emerald-950",
+  "免费试用": "bg-[#d4ff00]/90 text-black",
+  "免费增值": "bg-[#d4ff00]/90 text-black",
   "付费": "bg-white/80 text-slate-900",
 };
 
@@ -25,7 +25,7 @@ export default function ToolCard({
   gallery?: string[] | null;
 }) {
   return (
-    <article className="group rounded-2xl bg-[#1a2622] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.45)] transition duration-300 hover:-translate-y-1 hover:bg-[#212f2a]">
+    <article className="group rounded-2xl border border-white/10 bg-white/[0.03] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.45)] backdrop-blur-[10px] transition duration-300 hover:-translate-y-1 hover:bg-white/[0.06]">
       {imageUrl ? (
         <div className="mb-6 overflow-hidden rounded-xl border border-white/10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -37,7 +37,7 @@ export default function ToolCard({
         </div>
       ) : null}
       <div className="flex items-start gap-5">
-        <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/5 shadow-[0_10px_24px_rgba(0,0,0,0.25)]">
+        <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/[0.03] shadow-[0_10px_24px_rgba(0,0,0,0.25)]">
           <span className="text-xl font-semibold text-white/70">
             {name.slice(0, 1)}
           </span>

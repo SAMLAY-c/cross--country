@@ -513,12 +513,19 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0b1110] text-white">
+    <div
+      className="min-h-screen bg-[#0a0a0a] text-[#a1a1aa]"
+      style={{
+        ["--accent" as unknown as string]: "#d4ff00",
+        ["--accent-glow" as unknown as string]: "rgba(212,255,0,0.35)",
+        ["--accent-contrast" as unknown as string]: "#0a0a0a",
+      }}
+    >
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_20%,rgba(88,120,110,0.35),transparent_55%),radial-gradient(circle_at_90%_15%,rgba(255,204,148,0.2),transparent_50%),radial-gradient(circle_at_50%_90%,rgba(135,210,170,0.25),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(8,12,11,0.92),rgba(14,18,17,0.6))]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_20%,rgba(212,255,0,0.12),transparent_55%),radial-gradient(circle_at_90%_15%,rgba(0,255,148,0.12),transparent_50%),radial-gradient(circle_at_50%_90%,rgba(120,200,255,0.12),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(10,10,10,0.92),rgba(0,0,0,0.7))]" />
         <main className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-10 px-6 pb-20 pt-12 sm:px-10">
-          <header className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-[0_30px_80px_rgba(0,0,0,0.55)] backdrop-blur">
+          <header className="rounded-3xl border border-[#333333] bg-white/[0.03] p-8 shadow-[0_30px_80px_rgba(0,0,0,0.55)] backdrop-blur-[10px]">
             <p className="text-xs font-semibold uppercase tracking-[0.45em] text-white/50">
               Admin Console
             </p>
@@ -565,7 +572,7 @@ export default function AdminPage() {
           </header>
 
           <section className="grid gap-8">
-            <div className="rounded-3xl border border-white/10 bg-[#0f1916]/90 p-6 shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
+            <div className="rounded-3xl border border-[#333333] bg-[#121212] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <h2 className="text-xl font-semibold">Tools</h2>
@@ -586,7 +593,7 @@ export default function AdminPage() {
                   {tools.map((tool) => (
                     <div
                       key={tool.id}
-                      className="rounded-2xl border border-white/10 bg-white/5 p-4"
+                      className="rounded-2xl border border-[#333333] bg-white/[0.03] p-4 backdrop-blur-[10px]"
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div>
@@ -644,12 +651,12 @@ export default function AdminPage() {
                   ))}
                 </div>
 
-                <div className="space-y-3 rounded-2xl border border-white/10 bg-black/30 p-4">
+                <div className="space-y-3 rounded-2xl border border-[#333333] bg-black/40 p-4">
                   <p className="text-xs uppercase tracking-[0.3em] text-white/45">
                     {editingToolId ? "编辑 Tool" : "新增 Tool"}
                   </p>
                   <input
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="name *"
                     value={toolForm.name}
                     onChange={(event) =>
@@ -660,7 +667,7 @@ export default function AdminPage() {
                     }
                   />
                   <input
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="tag *"
                     value={toolForm.tag}
                     onChange={(event) =>
@@ -671,7 +678,7 @@ export default function AdminPage() {
                     }
                   />
                   <input
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="category"
                     value={toolForm.category}
                     onChange={(event) =>
@@ -682,7 +689,7 @@ export default function AdminPage() {
                     }
                   />
                   <input
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="price"
                     value={toolForm.price}
                     onChange={(event) =>
@@ -693,7 +700,7 @@ export default function AdminPage() {
                     }
                   />
                   <input
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="url"
                     value={toolForm.url}
                     onChange={(event) =>
@@ -704,7 +711,7 @@ export default function AdminPage() {
                     }
                   />
                   <input
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="affiliate_link"
                     value={toolForm.affiliate_link}
                     onChange={(event) =>
@@ -714,7 +721,7 @@ export default function AdminPage() {
                       }))
                     }
                   />
-                  <div className="space-y-4 rounded-2xl border border-white/10 bg-black/20 p-3">
+                  <div className="space-y-4 rounded-2xl border border-[#333333] bg-black/30 p-3">
                     <ImageUpload
                       label="Logo"
                       value={toolForm.logo_url}
@@ -747,7 +754,7 @@ export default function AdminPage() {
                     />
                   </div>
                   <textarea
-                    className="min-h-[88px] w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="min-h-[88px] w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="description"
                     value={toolForm.description}
                     onChange={(event) =>
@@ -772,7 +779,7 @@ export default function AdminPage() {
                   </label>
                   <div className="flex gap-2">
                     <button
-                      className="flex-1 rounded-full bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#0b1110] transition hover:bg-white"
+                      className="flex-1 rounded-full bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#0a0a0a] transition hover:bg-white"
                       onClick={handleSaveTool}
                     >
                       保存
@@ -788,7 +795,7 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-[#12131f]/90 p-6 shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
+            <div className="rounded-3xl border border-[#333333] bg-[#121212] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <h2 className="text-xl font-semibold">Prompts</h2>
@@ -809,7 +816,7 @@ export default function AdminPage() {
                   {prompts.map((prompt) => (
                     <div
                       key={prompt.id}
-                      className="rounded-2xl border border-white/10 bg-white/5 p-4"
+                      className="rounded-2xl border border-[#333333] bg-white/[0.03] p-4"
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div>
@@ -865,12 +872,12 @@ export default function AdminPage() {
                   ))}
                 </div>
 
-                <div className="space-y-3 rounded-2xl border border-white/10 bg-black/30 p-4">
+                <div className="space-y-3 rounded-2xl border border-[#333333] bg-black/40 p-4">
                   <p className="text-xs uppercase tracking-[0.3em] text-white/45">
                     {editingPromptId ? "编辑 Prompt" : "新增 Prompt"}
                   </p>
                   <input
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="title *"
                     value={promptForm.title}
                     onChange={(event) =>
@@ -881,7 +888,7 @@ export default function AdminPage() {
                     }
                   />
                   <input
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="category *"
                     value={promptForm.category}
                     onChange={(event) =>
@@ -892,7 +899,7 @@ export default function AdminPage() {
                     }
                   />
                   <input
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="platforms (用逗号分隔) *"
                     value={promptForm.platforms}
                     onChange={(event) =>
@@ -903,7 +910,7 @@ export default function AdminPage() {
                     }
                   />
                   <textarea
-                    className="min-h-[88px] w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="min-h-[88px] w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="preview"
                     value={promptForm.preview}
                     onChange={(event) =>
@@ -924,7 +931,7 @@ export default function AdminPage() {
                     }
                   />
                   <textarea
-                    className="min-h-[120px] w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="min-h-[120px] w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="prompt *"
                     value={promptForm.prompt}
                     onChange={(event) =>
@@ -936,7 +943,7 @@ export default function AdminPage() {
                   />
                   <div className="flex gap-2">
                     <button
-                      className="flex-1 rounded-full bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#0b1110] transition hover:bg-white"
+                      className="flex-1 rounded-full bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#0a0a0a] transition hover:bg-white"
                       onClick={handleSavePrompt}
                     >
                       保存
@@ -952,7 +959,7 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-[#17131b]/90 p-6 shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
+            <div className="rounded-3xl border border-[#333333] bg-[#121212] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <h2 className="text-xl font-semibold">Posts</h2>
@@ -973,7 +980,7 @@ export default function AdminPage() {
                   {posts.map((post) => (
                     <div
                       key={post.id}
-                      className="rounded-2xl border border-white/10 bg-white/5 p-4"
+                      className="rounded-2xl border border-[#333333] bg-white/[0.03] p-4"
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div>
@@ -1031,12 +1038,12 @@ export default function AdminPage() {
                   ))}
                 </div>
 
-                <div className="space-y-3 rounded-2xl border border-white/10 bg-black/30 p-4">
+                <div className="space-y-3 rounded-2xl border border-[#333333] bg-black/40 p-4">
                   <p className="text-xs uppercase tracking-[0.3em] text-white/45">
                     {editingPostId ? "编辑 Post" : "新增 Post"}
                   </p>
                   <input
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="title *"
                     value={postForm.title}
                     onChange={(event) =>
@@ -1047,7 +1054,7 @@ export default function AdminPage() {
                     }
                   />
                   <input
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="tag"
                     value={postForm.tag}
                     onChange={(event) =>
@@ -1058,7 +1065,7 @@ export default function AdminPage() {
                     }
                   />
                   <input
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="read_time"
                     value={postForm.read_time}
                     onChange={(event) =>
@@ -1069,7 +1076,7 @@ export default function AdminPage() {
                     }
                   />
                   <input
-                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     type="date"
                     value={postForm.published_at}
                     onChange={(event) =>
@@ -1100,7 +1107,7 @@ export default function AdminPage() {
                     }
                   />
                   <textarea
-                    className="min-h-[88px] w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="min-h-[88px] w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="excerpt"
                     value={postForm.excerpt}
                     onChange={(event) =>
@@ -1111,7 +1118,7 @@ export default function AdminPage() {
                     }
                   />
                   <textarea
-                    className="min-h-[120px] w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                    className="min-h-[120px] w-full rounded-lg border border-[#333333] bg-white/[0.03] px-3 py-2 text-sm"
                     placeholder="content"
                     value={postForm.content}
                     onChange={(event) =>
@@ -1123,7 +1130,7 @@ export default function AdminPage() {
                   />
                   <div className="flex gap-2">
                     <button
-                      className="flex-1 rounded-full bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#0b1110] transition hover:bg-white"
+                      className="flex-1 rounded-full bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#0a0a0a] transition hover:bg-white"
                       onClick={handleSavePost}
                     >
                       保存

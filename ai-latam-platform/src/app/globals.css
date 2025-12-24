@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #a1a1aa;
 }
 
 @theme inline {
@@ -15,7 +15,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground: #a1a1aa;
   }
 }
 
@@ -44,13 +44,13 @@ body {
   margin-top: 32px;
   margin-bottom: 56px;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid #333333;
 }
 
 .filter-chip {
   padding: 10px 24px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #333333;
   background: transparent;
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.95rem;
@@ -60,17 +60,17 @@ body {
 }
 
 .filter-chip:hover {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.35);
   color: #fff;
   background: rgba(255, 255, 255, 0.02);
 }
 
 .filter-chip.active {
-  background: #ccff00;
+  background: #d4ff00;
   color: #000;
-  border-color: #ccff00;
+  border-color: #d4ff00;
   font-weight: 700;
-  box-shadow: 0 0 15px rgba(204, 255, 0, 0.3);
+  box-shadow: 0 0 15px rgba(212, 255, 0, 0.3);
 }
 
 .hero-word {
@@ -110,15 +110,15 @@ body {
 .orb-core {
   background: radial-gradient(
     circle at 30% 30%,
-    rgba(204, 255, 0, 0.6),
-    rgba(12, 20, 16, 0.1) 60%,
-    rgba(0, 0, 0, 0.6) 100%
+    rgba(212, 255, 0, 0.6),
+    rgba(18, 18, 18, 0.15) 60%,
+    rgba(0, 0, 0, 0.7) 100%
   );
-  box-shadow: 0 0 40px rgba(204, 255, 0, 0.25);
+  box-shadow: 0 0 40px rgba(212, 255, 0, 0.25);
 }
 
 .orb-ring {
-  border: 1px solid rgba(204, 255, 0, 0.4);
+  border: 1px solid rgba(212, 255, 0, 0.4);
   animation: orbit 10s linear infinite;
 }
 
@@ -132,8 +132,15 @@ body {
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
-  border-right: 1px solid rgba(204, 255, 0, 0.6);
+  border-right: 1px solid rgba(212, 255, 0, 0.6);
   animation: type-line 4s steps(32) infinite;
+}
+
+.text-accent-gradient {
+  background: linear-gradient(90deg, #d4ff00 0%, #ffffff 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .logo-orbit {

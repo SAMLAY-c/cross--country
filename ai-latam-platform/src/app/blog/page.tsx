@@ -76,17 +76,17 @@ export default async function BlogPage() {
 
   return (
     <div
-      className="min-h-screen bg-[#0d1714] text-white [font-family:var(--font-eco)]"
+      className="min-h-screen bg-[#0a0a0a] text-[#a1a1aa] [font-family:var(--font-eco)]"
       style={{
-        ["--accent" as unknown as string]: "#c2f700",
-        ["--accent-glow" as unknown as string]: "rgba(194,247,0,0.35)",
-        ["--accent-contrast" as unknown as string]: "#0d1714",
+        ["--accent" as unknown as string]: "#d4ff00",
+        ["--accent-glow" as unknown as string]: "rgba(212,255,0,0.35)",
+        ["--accent-contrast" as unknown as string]: "#0a0a0a",
       }}
     >
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(175,210,200,0.18),transparent_60%),radial-gradient(circle_at_15%_10%,rgba(90,150,138,0.22),transparent_55%),radial-gradient(circle_at_85%_25%,rgba(255,210,152,0.2),transparent_45%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(12,22,18,0.2),rgba(8,12,10,0.62))]" />
-        <div className="absolute inset-0 bg-[url('/eco-hero.svg')] bg-cover bg-center opacity-80" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(212,255,0,0.12),transparent_60%),radial-gradient(circle_at_15%_10%,rgba(0,255,148,0.12),transparent_55%),radial-gradient(circle_at_85%_25%,rgba(120,200,255,0.12),transparent_45%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(10,10,10,0.2),rgba(0,0,0,0.7))]" />
+        <div className="absolute inset-0 bg-[url('/eco-hero.svg')] bg-cover bg-center opacity-35 grayscale" />
         <div className="brightness-overlay absolute inset-0 bg-white mix-blend-soft-light pointer-events-none" />
         <main className="relative w-full flex min-h-screen flex-col gap-16 px-8 pb-20 pt-10 sm:px-12 lg:px-20">
           <Nav currentPath="/blog" />
@@ -97,7 +97,7 @@ export default async function BlogPage() {
                 <p className="text-xs font-semibold uppercase tracking-[0.4em] text-white/60">
                   Blog
                 </p>
-                <h1 className="text-5xl font-extrabold leading-[1.05] sm:text-6xl lg:text-7xl [font-family:var(--font-display)] text-transparent bg-clip-text bg-[linear-gradient(180deg,#ffffff_0%,#b4bcbc_100%)]">
+                <h1 className="text-5xl font-extrabold leading-[1.05] sm:text-6xl lg:text-7xl [font-family:var(--font-display)] text-white">
                   洞察<span className="text-[var(--accent)]">AI</span>趋势，
                   记录每一次增长。
                 </h1>

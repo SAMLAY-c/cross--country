@@ -10,10 +10,10 @@ export default function RealtimePostsList() {
       {posts.map((post) => (
         <article
           key={post.id}
-          className="flex h-full flex-col rounded-2xl bg-[#1a2622] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.45)] transition hover:-translate-y-1"
+          className="flex h-full flex-col rounded-2xl border border-[#333333] bg-[#121212] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.45)] transition hover:-translate-y-1"
         >
           {post.coverImage ? (
-            <div className="mb-4 overflow-hidden rounded-xl border border-white/10">
+            <div className="mb-4 overflow-hidden rounded-xl border border-[#333333]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={post.coverImage}
@@ -22,7 +22,7 @@ export default function RealtimePostsList() {
               />
             </div>
           ) : (
-            <div className="mb-4 flex h-40 items-center justify-center rounded-xl border border-white/10 bg-[radial-gradient(circle_at_20%_20%,rgba(194,247,0,0.25),transparent_55%),radial-gradient(circle_at_80%_20%,rgba(120,200,255,0.18),transparent_55%),linear-gradient(135deg,#0c1411,#16221d)]">
+            <div className="mb-4 flex h-40 items-center justify-center rounded-xl border border-[#333333] bg-[radial-gradient(circle_at_20%_20%,rgba(212,255,0,0.18),transparent_55%),radial-gradient(circle_at_80%_20%,rgba(120,200,255,0.12),transparent_55%),linear-gradient(135deg,#0a0a0a,#121212)]">
               <span className="text-sm font-semibold tracking-[0.3em] text-white/60">
                 AI
               </span>
@@ -33,7 +33,7 @@ export default function RealtimePostsList() {
               {post.gallery.slice(0, 3).map((item) => (
                 <div
                   key={item}
-                  className="h-14 w-14 overflow-hidden rounded-lg border border-white/10"
+                  className="h-14 w-14 overflow-hidden rounded-lg border border-[#333333]"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -62,7 +62,7 @@ export default function RealtimePostsList() {
                   {keywords.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70"
+                      className="rounded-full border border-[#333333] bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70"
                     >
                       {tag}
                     </span>
@@ -87,7 +87,7 @@ export default function RealtimePostsList() {
               阅读全文 →
             </a>
           ) : (
-            <span className="mt-5 inline-flex items-center gap-2 rounded-md bg-white/5 px-4 py-2 text-sm font-semibold text-white/40">
+            <span className="mt-5 inline-flex items-center gap-2 rounded-md bg-white/[0.03] px-4 py-2 text-sm font-semibold text-white/40">
               暂无原文链接
             </span>
           )}

@@ -54,17 +54,17 @@ export default async function ToolsDirectory() {
 
   return (
     <div
-      className="min-h-screen bg-[#0d1714] text-white [font-family:var(--font-eco)]"
+      className="min-h-screen bg-[#0a0a0a] text-[#a1a1aa] [font-family:var(--font-eco)]"
       style={{
-        ["--accent" as unknown as string]: "#b8ef00",
-        ["--accent-glow" as unknown as string]: "rgba(184,239,0,0.35)",
-        ["--accent-contrast" as unknown as string]: "#0d1714",
+        ["--accent" as unknown as string]: "#d4ff00",
+        ["--accent-glow" as unknown as string]: "rgba(212,255,0,0.35)",
+        ["--accent-contrast" as unknown as string]: "#0a0a0a",
       }}
     >
-      <div className="relative overflow-hidden bg-[#0d1714]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(175,210,200,0.18),transparent_60%),radial-gradient(circle_at_15%_10%,rgba(90,150,138,0.22),transparent_55%),radial-gradient(circle_at_85%_25%,rgba(255,210,152,0.2),transparent_45%)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(12,22,18,0.2),rgba(8,12,10,0.62))]" />
-          <div className="absolute inset-0 bg-[url('/eco-hero.svg')] bg-cover bg-center opacity-80" />
+      <div className="relative overflow-hidden bg-[#0a0a0a]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(212,255,0,0.12),transparent_60%),radial-gradient(circle_at_15%_10%,rgba(0,255,148,0.12),transparent_55%),radial-gradient(circle_at_85%_25%,rgba(120,200,255,0.12),transparent_45%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(10,10,10,0.2),rgba(0,0,0,0.7))]" />
+          <div className="absolute inset-0 bg-[url('/eco-hero.svg')] bg-cover bg-center opacity-35 grayscale" />
           <div className="brightness-overlay absolute inset-0 bg-white mix-blend-soft-light pointer-events-none" />
           <div className="relative min-h-[85vh] px-8 pb-14 pt-10 sm:px-12 lg:px-20">
             <Nav currentPath="/tools" />
@@ -74,7 +74,7 @@ export default async function ToolsDirectory() {
                 <p className="text-xs font-semibold uppercase tracking-[0.4em] text-white/60">
                   工具目录
                 </p>
-                <h1 className="text-5xl font-extrabold leading-[1.05] sm:text-6xl lg:text-7xl [font-family:var(--font-display)] text-transparent bg-clip-text bg-[linear-gradient(180deg,#ffffff_0%,#b4bcbc_100%)]">
+                <h1 className="text-5xl font-extrabold leading-[1.05] sm:text-6xl lg:text-7xl [font-family:var(--font-display)] text-white">
                   发现<span className="text-[var(--accent)]">AI 工具</span>，直接提升你的业务效率。
                 </h1>
                 <p className="max-w-2xl text-base text-white/60 sm:text-lg leading-relaxed">
@@ -94,7 +94,7 @@ export default async function ToolsDirectory() {
                       className={`rounded-full px-6 py-2.5 text-sm transition-all duration-300 border ${
                         index === 0
                           ? "bg-[var(--accent)] text-[var(--accent-contrast)] border-[var(--accent)] shadow-[0_0_15px_var(--accent-glow)] font-bold"
-                          : "bg-white/5 text-white/60 border-white/10 hover:bg-white/10 hover:text-white hover:border-white/30"
+                          : "bg-white/5 text-white/60 border-[#333333] hover:bg-white/10 hover:text-white hover:border-white/30"
                       }`}
                       type="button"
                     >
@@ -103,7 +103,7 @@ export default async function ToolsDirectory() {
                   ))}
                 </div>
               </div>
-              <div className="rounded-3xl bg-[#17221e] p-8 shadow-[0_30px_70px_rgba(0,0,0,0.4)]">
+              <div className="rounded-3xl border border-[#333333] bg-[#121212] p-8 shadow-[0_30px_70px_rgba(0,0,0,0.4)]">
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
                   焦点
                 </p>

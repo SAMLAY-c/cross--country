@@ -53,7 +53,7 @@ export default function ImageUpload({ label, value, onChange }: ImageUploadProps
         {label}
       </label>
       <div className="flex items-start gap-4">
-        <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/5">
+        <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-xl border border-[#333333] bg-white/[0.03]">
           {preview ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -67,7 +67,7 @@ export default function ImageUpload({ label, value, onChange }: ImageUploadProps
         </div>
         <div className="flex-1 space-y-2">
           <label
-            className={`inline-flex cursor-pointer items-center rounded-md border border-white/10 bg-white/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-white/70 transition hover:border-white/30 ${
+            className={`inline-flex cursor-pointer items-center rounded-md border border-[#333333] bg-white/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-white/70 transition hover:border-white/30 ${
               uploading ? "cursor-not-allowed opacity-60" : ""
             }`}
           >

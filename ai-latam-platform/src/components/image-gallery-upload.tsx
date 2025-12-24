@@ -70,7 +70,7 @@ export default function ImageGalleryUpload({
           items.map((url) => (
             <div
               key={url}
-              className="relative h-20 w-20 overflow-hidden rounded-lg border border-white/10 bg-white/5"
+              className="relative h-20 w-20 overflow-hidden rounded-lg border border-[#333333] bg-white/[0.03]"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={url} alt="gallery" className="h-full w-full object-cover" />
@@ -84,13 +84,13 @@ export default function ImageGalleryUpload({
             </div>
           ))
         ) : (
-          <div className="rounded-lg border border-dashed border-white/10 px-4 py-6 text-xs text-white/40">
+          <div className="rounded-lg border border-dashed border-[#333333] px-4 py-6 text-xs text-white/40">
             暂无图片
           </div>
         )}
       </div>
       <label
-        className={`inline-flex cursor-pointer items-center rounded-md border border-white/10 bg-white/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-white/70 transition hover:border-white/30 ${
+        className={`inline-flex cursor-pointer items-center rounded-md border border-[#333333] bg-white/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-white/70 transition hover:border-white/30 ${
           uploading ? "cursor-not-allowed opacity-60" : ""
         }`}
       >
