@@ -15,7 +15,7 @@ export default function Home() {
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(175,210,200,0.18),transparent_60%),radial-gradient(circle_at_15%_10%,rgba(90,150,138,0.22),transparent_55%),radial-gradient(circle_at_85%_25%,rgba(255,210,152,0.2),transparent_45%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(12,22,18,0.2),rgba(8,12,10,0.62))]" />
-        <div className="absolute inset-0 bg-[url('/eco-hero.jpg')] bg-cover bg-center opacity-80" />
+        <div className="absolute inset-0 bg-[url('/eco-hero.svg')] bg-cover bg-center opacity-80" />
         <div className="brightness-overlay absolute inset-0 bg-white mix-blend-soft-light pointer-events-none" />
         <main className="relative w-full flex min-h-screen flex-col gap-16 px-8 pb-20 pt-10 sm:px-12 lg:px-20">
           <Nav currentPath="/" />
@@ -126,7 +126,7 @@ export default function Home() {
 
             <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_0.8fr]">
               <div className="relative overflow-hidden rounded-2xl bg-[#1a2622] shadow-[0_30px_70px_rgba(0,0,0,0.5)]">
-                <div className="absolute inset-0 bg-[url('/eco-hero.jpg')] bg-cover bg-center opacity-90" />
+                <div className="absolute inset-0 bg-[url('/eco-hero.svg')] bg-cover bg-center opacity-90" />
                 <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(5,10,8,0.25),rgba(5,10,8,0.65))]" />
                 <div className="relative flex min-h-[320px] items-end p-6 sm:p-8">
                   <span className="rounded-md bg-[var(--accent)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--accent-contrast)]">
