@@ -82,6 +82,7 @@ model Prompt {
 // - readTime: 阅读时间，可选（如 "5 Min Read"）
 // - publishedAt: 发布日期，必填
 // - content: 文章内容，可选（长文本）
+// - sourceUrl: 原文链接，可选
 // - createdAt: 创建时间，默认当前时间
 
 model Post {
@@ -92,6 +93,7 @@ model Post {
   readTime     String?  @map("read_time")
   publishedAt  DateTime @default(now()) @map("published_at")
   content      String?  @db.Text
+  sourceUrl    String?  @map("source_url")
   coverImage   String?  @map("cover_image")
   gallery      Json?    @map("gallery")
   createdAt    DateTime @default(now()) @map("created_at")

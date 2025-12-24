@@ -26,6 +26,7 @@ export const getAllPosts = async (req: Request, res: Response) => {
         cover_image: post.coverImage,
         gallery: post.gallery,
         content: post.content,
+        source_url: post.sourceUrl,
         created_at: post.createdAt.toISOString(),
       })),
     };
@@ -60,6 +61,7 @@ export const getPostById = async (req: Request, res: Response) => {
       cover_image: post.coverImage,
       gallery: post.gallery,
       content: post.content,
+      source_url: post.sourceUrl,
       created_at: post.createdAt.toISOString(),
     });
   } catch (error) {
@@ -80,6 +82,7 @@ export const createPost = async (req: Request, res: Response) => {
       cover_image,
       gallery,
       content,
+      source_url,
     } = req.body;
 
     if (!title || !published_at) {
@@ -96,6 +99,7 @@ export const createPost = async (req: Request, res: Response) => {
         coverImage: cover_image,
         gallery,
         content,
+        sourceUrl: source_url,
       },
     });
 
@@ -109,6 +113,7 @@ export const createPost = async (req: Request, res: Response) => {
       cover_image: post.coverImage,
       gallery: post.gallery,
       content: post.content,
+      source_url: post.sourceUrl,
       created_at: post.createdAt.toISOString(),
     });
   } catch (error) {
@@ -130,6 +135,7 @@ export const updatePost = async (req: Request, res: Response) => {
       cover_image,
       gallery,
       content,
+      source_url,
     } = req.body;
 
     const updateData: any = {};
@@ -141,6 +147,7 @@ export const updatePost = async (req: Request, res: Response) => {
     if (cover_image !== undefined) updateData.coverImage = cover_image;
     if (gallery !== undefined) updateData.gallery = gallery;
     if (content !== undefined) updateData.content = content;
+    if (source_url !== undefined) updateData.sourceUrl = source_url;
 
     const post = await prisma.post.update({
       where: { id: Number(id) },
@@ -157,6 +164,7 @@ export const updatePost = async (req: Request, res: Response) => {
       cover_image: post.coverImage,
       gallery: post.gallery,
       content: post.content,
+      source_url: post.sourceUrl,
       created_at: post.createdAt.toISOString(),
     });
   } catch (error) {

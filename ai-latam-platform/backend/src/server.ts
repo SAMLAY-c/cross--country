@@ -8,7 +8,27 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // 中间件
-app.use(cors());
+// CORS 配置：生产环境应该限制具体的前端域名
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'http://localhost:7240',
+  'http://localhost:7240',
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // 允许没有 origin 的请求（如移动应用、Postman等）
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`CORS blocked origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

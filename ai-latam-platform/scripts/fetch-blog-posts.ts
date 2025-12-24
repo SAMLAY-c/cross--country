@@ -1,9 +1,12 @@
 /**
  * Blog Posts Aggregator
- * 从 Medium/Dev.to 等平台抓取 AI 相关技术文章
+ * 从指定 RSS 源抓取文章并保存全文
  */
 
 import { createClient } from '@supabase/supabase-js';
+import Parser from 'rss-parser';
+import { JSDOM } from 'jsdom';
+import { Readability } from '@mozilla/readability';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -13,74 +16,152 @@ if (!supabaseUrl || !supabaseServiceKey) {
 }
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
+const parser = new Parser({
+  timeout: 15000,
+  headers: {
+    'User-Agent': 'ai-latam-platform-bot/1.0',
+  },
+});
 
-interface BlogPost {
+type FeedSource = {
+  name: string;
+  rssUrl: string;
+  tag: string;
+};
+
+const FEEDS: FeedSource[] = [
+  { name: 'OpenAI', rssUrl: 'https://openai.com/news/rss.xml', tag: 'OpenAI' },
+  { name: 'DeepMind', rssUrl: 'https://deepmind.google/discover/blog/rss.xml', tag: 'DeepMind' },
+  { name: 'Google Research', rssUrl: 'https://research.google/blog/rss', tag: 'Google Research' },
+  { name: 'Google AI Blog', rssUrl: 'http://googleaiblog.blogspot.com/atom.xml', tag: 'Google AI Blog' },
+  { name: 'Microsoft Research', rssUrl: 'https://www.microsoft.com/en-us/research/feed/', tag: 'Microsoft Research' },
+  { name: 'AWS ML Blog', rssUrl: 'https://aws.amazon.com/blogs/machine-learning/feed/', tag: 'AWS ML Blog' },
+  { name: 'Hugging Face', rssUrl: 'https://huggingface.co/blog/feed.xml', tag: 'Hugging Face' },
+  { name: 'Papers with Code', rssUrl: 'https://paperswithcode.com/rss/trending', tag: 'Papers with Code' },
+  { name: 'The Gradient', rssUrl: 'https://thegradient.pub/rss/', tag: 'The Gradient' },
+  { name: 'Andrej Karpathy', rssUrl: 'http://karpathy.github.io/feed.xml', tag: 'Andrej Karpathy' },
+  { name: 'Jay Alammar', rssUrl: 'http://jalammar.github.io/feed.xml', tag: 'Jay Alammar' },
+  { name: 'Sebastian Raschka', rssUrl: 'https://magazine.sebastianraschka.com/feed', tag: 'Sebastian Raschka' },
+  { name: 'Lil\'Log', rssUrl: 'https://lilianweng.github.io/index.xml', tag: 'Lil\'Log' },
+  { name: 'MIT Technology Review', rssUrl: 'https://www.technologyreview.com/topic/artificial-intelligence/feed', tag: 'MIT Technology Review' },
+  { name: 'Ars Technica AI', rssUrl: 'https://arstechnica.com/tag/ai/feed/', tag: 'Ars Technica' },
+];
+
+const MAX_FEEDS = Number(process.env.RSS_MAX_FEEDS ?? 0);
+const MAX_ITEMS_PER_FEED = Number(process.env.RSS_MAX_ITEMS ?? 0);
+
+type BlogPost = {
   title: string;
   url: string;
   excerpt: string;
-  author: string;
   publishedAt: string;
-  tags: string[];
+  tag: string;
+  readTime: string;
+  content: string;
+  coverImage?: string | null;
+};
+
+const KEYWORD_RULES: Array<{ label: string; keywords: string[] }> = [
+  { label: 'LLM', keywords: ['llm', 'large language model', 'gpt', 'chatgpt', 'gemini', 'claude'] },
+  { label: 'Agent', keywords: ['agent', 'multi-agent', 'tool use', 'planning'] },
+  { label: 'RAG', keywords: ['retrieval', 'rag', 'vector database'] },
+  { label: 'Multimodal', keywords: ['multimodal', 'vision-language', 'image-text'] },
+  { label: 'Diffusion', keywords: ['diffusion', 'stable diffusion', 'image generation'] },
+  { label: 'Robotics', keywords: ['robot', 'robotics', 'embodied'] },
+  { label: 'Safety', keywords: ['safety', 'alignment', 'red team', 'security'] },
+  { label: 'Reasoning', keywords: ['reasoning', 'chain-of-thought', 'cot'] },
+  { label: 'Optimization', keywords: ['training', 'fine-tuning', 'finetuning', 'distillation', 'quantization'] },
+  { label: 'MLOps', keywords: ['mlops', 'deployment', 'serving', 'inference'] },
+  { label: 'Benchmark', keywords: ['benchmark', 'evaluation', 'leaderboard'] },
+  { label: 'Policy', keywords: ['policy', 'regulation', 'governance'] },
+];
+
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
-/**
- * 从 Medium RSS 抓取 AI 文章 (示例)
- * TODO: 替换为真实的 RSS 解析器 (如 rss-parser)
- */
-async function fetchFromMedium(): Promise<BlogPost[]> {
-  // 模拟数据
-  return [
-    {
-      title: 'Introduction to Large Language Models',
-      url: 'https://medium.com/example/llm-intro',
-      excerpt: 'Learn about the fundamentals of LLMs and how they work...',
-      author: 'John Doe',
-      publishedAt: new Date().toISOString(),
-      tags: ['AI', 'Machine Learning', 'LLM'],
-    },
-  ];
+function truncate(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength - 1)}…`;
 }
 
-/**
- * 从 Dev.to 抓取 AI 文章 (示例)
- */
-async function fetchFromDevTo(): Promise<BlogPost[]> {
-  // 模拟数据
-  return [
-    {
-      title: 'Building AI Applications with Next.js',
-      url: 'https://dev.to/example/nextjs-ai',
-      excerpt: 'A practical guide to integrating AI into your web apps...',
-      author: 'Jane Smith',
-      publishedAt: new Date().toISOString(),
-      tags: ['JavaScript', 'AI', 'Web Development'],
-    },
-  ];
+function extractKeywords(text: string): string[] {
+  const normalized = text.toLowerCase();
+  return KEYWORD_RULES.filter(rule =>
+    rule.keywords.some(keyword => normalized.includes(keyword))
+  ).map(rule => rule.label);
 }
 
-/**
- * 判断是否为 AI 相关文章
- */
-function isAIArticle(title: string, tags: string[]): boolean {
-  const aiKeywords = ['ai', 'artificial intelligence', 'machine learning', 'deep learning', 'llm', 'gpt'];
-  const text = title.toLowerCase() + tags.join(' ').toLowerCase();
-  return aiKeywords.some(keyword => text.includes(keyword));
+function buildTag(sourceTag: string, keywords: string[]): string {
+  const unique = Array.from(new Set([sourceTag, ...keywords]));
+  return unique.join(' / ');
 }
 
-/**
- * 计算阅读时间 (基于字数)
- */
-function calculateReadingTime(excerpt: string): number {
-  const wordsPerMinute = 200;
-  const wordCount = excerpt.split(/\s+/).length;
-  return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
+function calculateReadingTime(text: string): string {
+  const wordMatches = text.match(/\b\w+\b/g) ?? [];
+  const cjkMatches = text.match(/[\u4e00-\u9fff]/g) ?? [];
+  const wordCount = wordMatches.length + Math.ceil(cjkMatches.length / 2);
+  const minutes = Math.max(1, Math.ceil(wordCount / 200));
+  return `${minutes} Min Read`;
 }
 
-/**
- * 保存文章到数据库
- */
+type ArticleResult = {
+  content: string;
+  coverImage?: string | null;
+};
+
+function resolveImageUrl(rawUrl: string | null | undefined, baseUrl: string): string | null {
+  if (!rawUrl) return null;
+  try {
+    return new URL(rawUrl, baseUrl).toString();
+  } catch {
+    return null;
+  }
+}
+
+function extractCoverImage(document: Document, url: string): string | null {
+  const metaOg = document.querySelector('meta[property="og:image"]') as HTMLMetaElement | null;
+  const metaTwitter = document.querySelector('meta[name="twitter:image"]') as HTMLMetaElement | null;
+  const metaItem = document.querySelector('meta[itemprop="image"]') as HTMLMetaElement | null;
+  const metaImage =
+    resolveImageUrl(metaOg?.content, url) ||
+    resolveImageUrl(metaTwitter?.content, url) ||
+    resolveImageUrl(metaItem?.content, url);
+  if (metaImage) return metaImage;
+
+  const firstImage = document.querySelector('article img, main img, img') as HTMLImageElement | null;
+  return resolveImageUrl(firstImage?.src, url);
+}
+
+async function fetchArticleContent(url: string): Promise<ArticleResult> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: { 'User-Agent': 'ai-latam-platform-bot/1.0' },
+    });
+    if (!response.ok) {
+      return { content: '' };
+    }
+    const html = await response.text();
+    const dom = new JSDOM(html, { url });
+    const reader = new Readability(dom.window.document);
+    const article = reader.parse();
+    const coverImage = extractCoverImage(dom.window.document, url);
+    if (!article?.textContent) {
+      return { content: '', coverImage };
+    }
+    return { content: article.textContent.trim(), coverImage };
+  } catch {
+    return { content: '' };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function savePost(post: BlogPost) {
-  // 检查是否已存在
   const { data: existing } = await supabase
     .from('posts')
     .select('id')
@@ -92,16 +173,17 @@ async function savePost(post: BlogPost) {
     return;
   }
 
-  // 插入新文章
   const { error } = await supabase
     .from('posts')
     .insert({
       title: post.title,
       excerpt: post.excerpt,
-      tag: post.tags[0] || 'AI',
-      read_time: calculateReadingTime(post.excerpt),
-      content: `文章来源: ${post.url}\n作者: ${post.author}`, // 简化内容
+      tag: post.tag,
+      read_time: post.readTime,
+      content: post.content,
       published_at: post.publishedAt,
+      source_url: post.url,
+      cover_image: post.coverImage ?? null,
     });
 
   if (error) {
@@ -111,31 +193,79 @@ async function savePost(post: BlogPost) {
   }
 }
 
-/**
- * 主函数
- */
+async function fetchFromFeed(feed: FeedSource): Promise<BlogPost[]> {
+  let parsed: Parser.Output<Parser.Item>;
+  try {
+    parsed = await parser.parseURL(feed.rssUrl);
+  } catch (error) {
+    console.error(`⚠️  RSS 获取失败: ${feed.name}`, error);
+    return [];
+  }
+  if (!parsed.items?.length) return [];
+
+  const posts: BlogPost[] = [];
+  const items = MAX_ITEMS_PER_FEED > 0 ? parsed.items.slice(0, MAX_ITEMS_PER_FEED) : parsed.items;
+  for (let index = 0; index < items.length; index += 1) {
+    const item = items[index];
+    const title = item.title?.trim();
+    if (!title) continue;
+    const link = item.link || item.guid;
+    if (!link) continue;
+
+    const publishedAt = item.isoDate || item.pubDate || new Date().toISOString();
+    const rawExcerpt = item.contentSnippet || stripHtml(item.content || '');
+    const excerpt = truncate(rawExcerpt || title, 220);
+    console.log(`   ↳ ${index + 1}/${items.length}: ${title}`);
+    const article = await fetchArticleContent(link);
+    const content = article.content || stripHtml(item.content || rawExcerpt || title);
+    const keywords = extractKeywords(`${title} ${excerpt} ${content}`);
+    const tag = buildTag(feed.tag, keywords);
+    const coverImage =
+      article.coverImage ||
+      item.enclosure?.url ||
+      (item as { itunes?: { image?: string } }).itunes?.image ||
+      null;
+
+    posts.push({
+      title,
+      url: link,
+      excerpt,
+      publishedAt,
+      tag,
+      readTime: calculateReadingTime(content),
+      content,
+      coverImage,
+    });
+  }
+
+  return posts;
+}
+
 async function main() {
   console.log('🚀 开始抓取技术博客...');
   console.log(`⏰ 时间: ${new Date().toISOString()}`);
 
   try {
-    const [mediumPosts, devPosts] = await Promise.all([
-      fetchFromMedium(),
-      fetchFromDevTo(),
-    ]);
+    const allPosts: BlogPost[] = [];
+    const feedsToFetch = MAX_FEEDS > 0 ? FEEDS.slice(0, MAX_FEEDS) : FEEDS;
+    for (const feed of feedsToFetch) {
+      console.log(`🔎 抓取: ${feed.name}`);
+      const posts = await fetchFromFeed(feed);
+      if (!posts.length) {
+        continue;
+      }
+      allPosts.push(...posts);
+    }
 
-    const allPosts = [...mediumPosts, ...devPosts];
     console.log(`📦 获取到 ${allPosts.length} 篇文章`);
 
     let addedCount = 0;
     for (const post of allPosts) {
-      if (isAIArticle(post.title, post.tags)) {
-        await savePost(post);
-        addedCount++;
-      }
+      await savePost(post);
+      addedCount++;
     }
 
-    console.log(`\n✨ 完成! 新增 ${addedCount} 篇 AI 文章`);
+    console.log(`\n✨ 完成! 新增 ${addedCount} 篇文章`);
   } catch (error) {
     console.error('❌ 抓取失败:', error);
     process.exit(1);

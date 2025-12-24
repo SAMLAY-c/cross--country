@@ -1,0 +1,106 @@
+
+> ai-latam-platform@0.1.0 dev
+> next dev -p 7240
+
+▲ Next.js 16.1.0 (Turbopack)
+- Local:         http://localhost:7240
+- Network:       http://10.200.79.20:7240
+- Environments: .env.local, .env
+
+✓ Starting...
+✓ Ready in 941ms
+ GET /admin 200 in 1256ms (compile: 1105ms, render: 151ms)
+ GET /learning-guide 200 in 884ms (compile: 690ms, render: 193ms)
+ GET /learning-guide 200 in 104ms (compile: 15ms, render: 89ms)
+ GET /learning-guide 200 in 88ms (compile: 5ms, render: 83ms)
+ GET /learning-guide 200 in 39ms (compile: 5ms, render: 35ms)
+ GET /learning-guide 200 in 239ms (compile: 32ms, render: 207ms)
+ GET /blog 200 in 5.2s (compile: 88ms, render: 5.1s)
+ GET /prompts 200 in 5.1s (compile: 45ms, render: 5.0s)
+ GET /learning-guide 200 in 30ms (compile: 8ms, render: 22ms)
+ GET /prompts 200 in 4.8s (compile: 4ms, render: 4.8s)
+ GET /tools 200 in 5.1s (compile: 50ms, render: 5.1s)
+ GET /blog 200 in 5.0s (compile: 7ms, render: 5.0s)
+ GET /tools 200 in 5.1s (compile: 6ms, render: 5.0s)
+ GET /tools 200 in 268ms (compile: 5ms, render: 263ms)
+ GET /prompts 200 in 5.1s (compile: 6ms, render: 5.1s)
+ GET /blog 200 in 5.0s (compile: 8ms, render: 5.0s)
+ GET /learning-guide 200 in 23ms (compile: 6ms, render: 17ms)
+ GET /admin 200 in 71ms (compile: 12ms, render: 59ms)
+ GET /tools 200 in 5.1s (compile: 8ms, render: 5.1s)
+ GET /prompts 200 in 5.1s (compile: 8ms, render: 5.1s)
+ GET /tools 200 in 5.1s (compile: 8ms, render: 5.0s)
+ GET /prompts 200 in 5.1s (compile: 14ms, render: 5.1s)
+ GET /blog 200 in 4.4s (compile: 4ms, render: 4.4s)
+ GET /tools 200 in 5.1s (compile: 7ms, render: 5.1s)
+ GET /prompts 200 in 5.2s (compile: 13ms, render: 5.2s)
+✓ Compiled in 536ms
+✓ Compiled in 253ms
+✓ Compiled in 45ms
+ GET /prompts 200 in 5.1s (compile: 12ms, render: 5.1s)
+ GET /prompts 200 in 121ms (compile: 3ms, render: 117ms)
+✓ Compiled in 334ms
+ GET /prompts 200 in 5.1s (compile: 3ms, render: 5.1s)
+✓ Compiled in 150ms
+ GET /prompts 200 in 5.3s (compile: 132ms, render: 5.2s)
+ GET /prompts 200 in 5.1s (compile: 4ms, render: 5.1s)
+ GET /prompts 200 in 5.0s (compile: 1817µs, render: 5.0s)
+ GET /tools 200 in 5.4s (compile: 133ms, render: 5.3s)
+ GET /prompts 200 in 5.0s (compile: 11ms, render: 5.0s)
+✓ Compiled in 99ms
+ GET /prompts 200 in 5.1s (compile: 6ms, render: 5.1s)
+ GET /blog 200 in 5.1s (compile: 74ms, render: 5.0s)
+ GET /blog 200 in 5.2s (compile: 82ms, render: 5.1s)
+ GET /blog 200 in 5.5s (compile: 322ms, render: 5.1s)
+✓ Compiled in 14ms
+ GET /learning-guide 200 in 50ms (compile: 11ms, render: 39ms)
+ GET /learning-guide 200 in 49ms (compile: 10ms, render: 40ms)
+ GET /tools 200 in 5.1s (compile: 46ms, render: 5.1s)
+ GET /prompts 200 in 5.1s (compile: 9ms, render: 5.1s)
+✓ Compiled in 310ms
+✓ Compiled in 490ms
+ GET /prompts 200 in 5.6s (compile: 450ms, render: 5.2s)
+ GET /prompts 200 in 5.1s (compile: 9ms, render: 5.1s)
+ GET /prompts 200 in 5.0s (compile: 1563µs, render: 5.0s)
+ GET /prompts 200 in 5.0s (compile: 2ms, render: 5.0s)
+ GET /prompts 200 in 5.1s (compile: 26ms, render: 5.0s)
+ GET /prompts 200 in 5.0s (compile: 1517µs, render: 5.0s)
+ GET /prompts 200 in 5.0s (compile: 1001µs, render: 5.0s)
+ GET /prompts 200 in 5.0s (compile: 1403µs, render: 5.0s)
+ GET /prompts 200 in 5.0s (compile: 1473µs, render: 5.0s)
+ GET /prompts 200 in 5.0s (compile: 6ms, render: 5.0s)
+ GET /prompts 200 in 5.0s (compile: 1017µs, render: 5.0s)
+ GET /prompts 200 in 5.0s (compile: 1687µs, render: 5.0s)
+ GET /prompts 200 in 5.0s (compile: 1722µs, render: 5.0s)
+ GET /prompts 200 in 5.0s (compile: 6ms, render: 5.0s)
+ GET /prompts 200 in 5.0s (compile: 1012µs, render: 5.0s)
+ GET /prompts 200 in 5.0s (compile: 1836µs, render: 5.0s)
+ GET /prompts 200 in 5.0s (compile: 902µs, render: 5.0s)
+ GET /prompts 200 in 5.0s (compile: 1155µs, render: 5.0s)
+ GET /prompts 200 in 5.0s (compile: 7ms, render: 5.0s)
+ GET /blog 200 in 4.8s (compile: 435ms, render: 4.3s)
+ GET /blog 200 in 1245ms (compile: 10ms, render: 1236ms)
+ GET /blog 200 in 1239ms (compile: 13ms, render: 1226ms)
+ GET /prompts 200 in 1031ms (compile: 8ms, render: 1023ms)
+✓ Compiled in 363ms
+✓ Compiled in 0ms
+ GET /prompts 200 in 582ms (compile: 391ms, render: 191ms)
+ GET /prompts 200 in 180ms (compile: 3ms, render: 177ms)
+ GET /prompts 200 in 129ms (compile: 9ms, render: 120ms)
+ GET /prompts 200 in 95ms (compile: 6ms, render: 89ms)
+ GET /prompts 200 in 87ms (compile: 3ms, render: 84ms)
+ GET /prompts 200 in 92ms (compile: 3ms, render: 89ms)
+ GET /prompts 200 in 96ms (compile: 1475µs, render: 95ms)
+ GET /prompts 200 in 121ms (compile: 1239µs, render: 120ms)
+ GET /prompts 200 in 108ms (compile: 1592µs, render: 107ms)
+ GET /prompts 200 in 125ms (compile: 3ms, render: 122ms)
+ GET /prompts 200 in 104ms (compile: 1394µs, render: 102ms)
+ GET /prompts 200 in 124ms (compile: 3ms, render: 121ms)
+ GET /prompts 200 in 106ms (compile: 3ms, render: 104ms)
+ GET /prompts 200 in 109ms (compile: 4ms, render: 105ms)
+ GET /prompts 200 in 106ms (compile: 2ms, render: 103ms)
+ GET /prompts 200 in 87ms (compile: 3ms, render: 84ms)
+ GET /prompts 200 in 67ms (compile: 2ms, render: 65ms)
+ GET /prompts 200 in 49ms (compile: 2ms, render: 47ms)
+ GET /prompts 200 in 33ms (compile: 1051µs, render: 32ms)
+ GET /prompts 200 in 18ms (compile: 2ms, render: 15ms)

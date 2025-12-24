@@ -25,9 +25,10 @@ npx tsx scripts/fetch-blog-posts.ts
 
 ### fetch-blog-posts.ts
 - **功能**: 抓取技术博客文章
-- **数据源**: Medium, Dev.to (可扩展)
+- **数据源**: AI 研究实验室、技术社区、个人博客与科技媒体 RSS
 - **去重**: 根据标题去重
-- **自动计算**: 阅读时间
+- **内容**: 抓取全文并计算阅读时间
+- **标签**: 来源标签 + 内容关键词标签
 
 ### fetch-prompts.ts
 - **功能**: 抓取 Prompt 模板
