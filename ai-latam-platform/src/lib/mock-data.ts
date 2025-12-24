@@ -5,6 +5,7 @@ export const DUMMY_TOOLS = [
     tag: "视频",
     description: "中国最强大的视频生成工具，Sora 的竞争对手。",
     price: "免费试用",
+    url: null,
   },
   {
     id: 2,
@@ -12,6 +13,7 @@ export const DUMMY_TOOLS = [
     tag: "图像",
     description: "艺术图像生成的黄金标准。",
     price: "付费",
+    url: null,
   },
   {
     id: 3,
@@ -19,6 +21,7 @@ export const DUMMY_TOOLS = [
     tag: "数字人",
     description: "声音克隆和逼真视频数字人，用于营销推广。",
     price: "免费增值",
+    url: null,
   },
   {
     id: 4,
@@ -26,6 +29,7 @@ export const DUMMY_TOOLS = [
     tag: "生产力",
     description: "你的第二大脑，现在拥有魔法般的写作能力。",
     price: "付费",
+    url: null,
   },
   {
     id: 5,
@@ -33,6 +37,7 @@ export const DUMMY_TOOLS = [
     tag: "演示",
     description: "用 AI 在几秒钟内创建演示文稿。",
     price: "免费增值",
+    url: null,
   },
 ];
 
