@@ -12,6 +12,7 @@ type Tool = {
   url?: string | null;
   logoUrl?: string | null;
   imageUrl?: string | null;
+  gallery?: string[] | null;
 };
 
 const DUMMY_TOOLS_TYPED: Tool[] = DUMMY_TOOLS;
@@ -29,6 +30,7 @@ function ToolCard({
   price,
   url,
   imageUrl,
+  gallery,
 }: {
   name: string;
   tag: string;
@@ -36,6 +38,7 @@ function ToolCard({
   price: string;
   url?: string | null;
   imageUrl?: string | null;
+  gallery?: string[] | null;
 }) {
   return (
     <article className="group rounded-2xl bg-[#1a2622] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.45)] transition duration-300 hover:-translate-y-1 hover:bg-[#212f2a]">
@@ -65,6 +68,19 @@ function ToolCard({
       <p className="mt-4 line-clamp-2 text-sm text-white/60 leading-relaxed">
         {description}
       </p>
+      {gallery?.length ? (
+        <div className="mt-4 flex gap-2">
+          {gallery.slice(0, 4).map((item) => (
+            <div
+              key={item}
+              className="h-12 w-12 overflow-hidden rounded-lg border border-white/10"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={item} alt={name} className="h-full w-full object-cover" />
+            </div>
+          ))}
+        </div>
+      ) : null}
       <div className="mt-6 flex items-center justify-between">
         <span
           className={clsx(
@@ -114,12 +130,13 @@ async function getTools(): Promise<Tool[]> {
     return data.tools.map((row) => ({
       id: row.id,
       name: row.name,
-      tag: row.tag || row.category || "工具",
+      tag: row.tag || (row as { category?: string | null }).category || "工具",
       description: row.description || "暂无描述。",
       price: row.price || "付费",
-      url: row.url ?? null,
-      logoUrl: row.logo_url ?? null,
-      imageUrl: row.image_url ?? null,
+      url: (row as { url?: string | null }).url ?? null,
+      logoUrl: (row as { logo_url?: string | null }).logo_url ?? null,
+      imageUrl: (row as { image_url?: string | null }).image_url ?? null,
+      gallery: (row as { gallery?: string[] | null }).gallery ?? null,
     }));
   } catch {
     return DUMMY_TOOLS_TYPED;

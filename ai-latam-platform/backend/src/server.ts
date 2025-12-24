@@ -13,18 +13,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 请求日志中间件
-app.use((req: Request, res: Response, next: NextFunction) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+app.use((_req: Request, _res: Response, next: NextFunction) => {
+  console.log(`${new Date().toISOString()} - ${_req.method} ${_req.path}`);
   next();
 });
 
 // 健康检查
-app.get('/health', (req: Request, res: Response) => {
+app.get('/health', (_req: Request, res: Response) => {
+  void _req;
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 // API 根路径
-app.get('/api', (req: Request, res: Response) => {
+app.get('/api', (_req: Request, res: Response) => {
+  void _req;
   res.json({
     message: 'AI Latam Platform API',
     version: '1.0.0',
@@ -42,12 +44,15 @@ app.use('/api/prompts', promptsRouter);
 app.use('/api/posts', postsRouter);
 
 // 404 处理
-app.use((req: Request, res: Response) => {
+app.use((_req: Request, res: Response) => {
+  void _req;
   res.status(404).json({ error: 'Not found' });
 });
 
 // 错误处理中间件
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  void _req;
+  void _next;
   console.error('Error:', err);
   res.status(500).json({ error: 'Internal server error' });
 });

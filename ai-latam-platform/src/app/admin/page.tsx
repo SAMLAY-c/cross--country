@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { DUMMY_POSTS, DUMMY_PROMPTS, DUMMY_TOOLS } from "@/lib/mock-data";
 import ImageUpload from "@/components/image-upload";
+import ImageGalleryUpload from "@/components/image-gallery-upload";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
@@ -18,6 +19,7 @@ type Tool = {
   affiliate_link: string | null;
   logo_url: string | null;
   image_url: string | null;
+  gallery: string[] | null;
   is_featured: boolean;
   created_at: string;
 };
@@ -42,6 +44,7 @@ type Post = {
   published_at: string;
   content: string | null;
   cover_image: string | null;
+  gallery: string[] | null;
   created_at: string;
 };
 
@@ -55,6 +58,7 @@ type ToolForm = {
   affiliate_link: string;
   logo_url: string;
   image_url: string;
+  gallery: string[];
   is_featured: boolean;
 };
 
@@ -75,6 +79,7 @@ type PostForm = {
   published_at: string;
   content: string;
   cover_image: string;
+  gallery: string[];
 };
 
 const initialToolForm: ToolForm = {
@@ -87,6 +92,7 @@ const initialToolForm: ToolForm = {
   affiliate_link: "",
   logo_url: "",
   image_url: "",
+  gallery: [],
   is_featured: false,
 };
 
@@ -107,6 +113,7 @@ const initialPostForm: PostForm = {
   published_at: "",
   content: "",
   cover_image: "",
+  gallery: [],
 };
 
 const MOCK_TOOLS: Tool[] = DUMMY_TOOLS.map((tool) => ({
@@ -120,6 +127,7 @@ const MOCK_TOOLS: Tool[] = DUMMY_TOOLS.map((tool) => ({
   affiliate_link: null,
   logo_url: null,
   image_url: null,
+  gallery: [],
   is_featured: false,
   created_at: new Date().toISOString(),
 }));
@@ -155,6 +163,7 @@ const MOCK_POSTS: Post[] = DUMMY_POSTS.map((post) => ({
   published_at: parseDotDate(post.publishedAt),
   content: null,
   cover_image: null,
+  gallery: [],
   created_at: new Date().toISOString(),
 }));
 
@@ -272,9 +281,9 @@ export default function AdminPage() {
   }, []);
 
   const resetToolForm = () => {
-    setToolForm(initialToolForm);
-    setEditingToolId(null);
-  };
+      setToolForm(initialToolForm);
+      setEditingToolId(null);
+    };
 
   const resetPromptForm = () => {
     setPromptForm(initialPromptForm);
@@ -282,9 +291,9 @@ export default function AdminPage() {
   };
 
   const resetPostForm = () => {
-    setPostForm(initialPostForm);
-    setEditingPostId(null);
-  };
+      setPostForm(initialPostForm);
+      setEditingPostId(null);
+    };
 
   const handleSaveTool = async () => {
     setError(null);
@@ -302,6 +311,7 @@ export default function AdminPage() {
       affiliate_link: toOptionalValue(toolForm.affiliate_link),
       logo_url: toOptionalValue(toolForm.logo_url),
       image_url: toOptionalValue(toolForm.image_url),
+      gallery: toolForm.gallery.length ? toolForm.gallery : null,
       is_featured: toolForm.is_featured,
     };
 
@@ -383,6 +393,7 @@ export default function AdminPage() {
       published_at: toIsoDate(postForm.published_at),
       content: toOptionalValue(postForm.content),
       cover_image: toOptionalValue(postForm.cover_image),
+      gallery: postForm.gallery.length ? postForm.gallery : null,
     };
 
     try {
@@ -465,6 +476,7 @@ export default function AdminPage() {
           affiliate_link: tool.affiliate_link,
           logo_url: tool.logo_url,
           image_url: tool.image_url,
+          gallery: tool.gallery,
           is_featured: tool.is_featured,
         });
       }
@@ -489,6 +501,7 @@ export default function AdminPage() {
           read_time: post.read_time,
           published_at: post.published_at,
           content: post.content,
+          gallery: post.gallery,
         });
       }
       await loadAll();
@@ -604,6 +617,7 @@ export default function AdminPage() {
                                 affiliate_link: tool.affiliate_link ?? "",
                                 logo_url: tool.logo_url ?? "",
                                 image_url: tool.image_url ?? "",
+                                gallery: tool.gallery ?? [],
                                 is_featured: tool.is_featured,
                               });
                             }}
@@ -718,6 +732,16 @@ export default function AdminPage() {
                         setToolForm((prev) => ({
                           ...prev,
                           image_url: url,
+                        }))
+                      }
+                    />
+                    <ImageGalleryUpload
+                      label="Gallery"
+                      value={toolForm.gallery}
+                      onChange={(urls) =>
+                        setToolForm((prev) => ({
+                          ...prev,
+                          gallery: urls,
                         }))
                       }
                     />
@@ -981,6 +1005,7 @@ export default function AdminPage() {
                                 ),
                                 content: post.content ?? "",
                                 cover_image: post.cover_image ?? "",
+                                gallery: post.gallery ?? [],
                               });
                             }}
                           >
@@ -1061,6 +1086,16 @@ export default function AdminPage() {
                       setPostForm((prev) => ({
                         ...prev,
                         cover_image: url,
+                      }))
+                    }
+                  />
+                  <ImageGalleryUpload
+                    label="Gallery"
+                    value={postForm.gallery}
+                    onChange={(urls) =>
+                      setPostForm((prev) => ({
+                        ...prev,
+                        gallery: urls,
                       }))
                     }
                   />

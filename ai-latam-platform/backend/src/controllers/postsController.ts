@@ -24,15 +24,16 @@ export const getAllPosts = async (req: Request, res: Response) => {
         read_time: post.readTime,
         published_at: post.publishedAt,
         cover_image: post.coverImage,
+        gallery: post.gallery,
         content: post.content,
         created_at: post.createdAt.toISOString(),
       })),
     };
 
-    res.json(response);
+    return res.json(response);
   } catch (error) {
     console.error('Error fetching posts:', error);
-    res.status(500).json({ error: 'Failed to fetch posts' });
+    return res.status(500).json({ error: 'Failed to fetch posts' });
   }
 };
 
@@ -49,7 +50,7 @@ export const getPostById = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Post not found' });
     }
 
-    res.json({
+    return res.json({
       id: post.id,
       title: post.title,
       excerpt: post.excerpt,
@@ -57,12 +58,13 @@ export const getPostById = async (req: Request, res: Response) => {
       read_time: post.readTime,
       published_at: post.publishedAt,
       cover_image: post.coverImage,
+      gallery: post.gallery,
       content: post.content,
       created_at: post.createdAt.toISOString(),
     });
   } catch (error) {
     console.error('Error fetching post:', error);
-    res.status(500).json({ error: 'Failed to fetch post' });
+    return res.status(500).json({ error: 'Failed to fetch post' });
   }
 };
 
@@ -76,6 +78,7 @@ export const createPost = async (req: Request, res: Response) => {
       read_time,
       published_at,
       cover_image,
+      gallery,
       content,
     } = req.body;
 
@@ -91,11 +94,12 @@ export const createPost = async (req: Request, res: Response) => {
         readTime: read_time,
         publishedAt: published_at,
         coverImage: cover_image,
+        gallery,
         content,
       },
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       id: post.id,
       title: post.title,
       excerpt: post.excerpt,
@@ -103,12 +107,13 @@ export const createPost = async (req: Request, res: Response) => {
       read_time: post.readTime,
       published_at: post.publishedAt,
       cover_image: post.coverImage,
+      gallery: post.gallery,
       content: post.content,
       created_at: post.createdAt.toISOString(),
     });
   } catch (error) {
     console.error('Error creating post:', error);
-    res.status(500).json({ error: 'Failed to create post' });
+    return res.status(500).json({ error: 'Failed to create post' });
   }
 };
 
@@ -123,6 +128,7 @@ export const updatePost = async (req: Request, res: Response) => {
       read_time,
       published_at,
       cover_image,
+      gallery,
       content,
     } = req.body;
 
@@ -133,6 +139,7 @@ export const updatePost = async (req: Request, res: Response) => {
     if (read_time !== undefined) updateData.readTime = read_time;
     if (published_at) updateData.publishedAt = published_at;
     if (cover_image !== undefined) updateData.coverImage = cover_image;
+    if (gallery !== undefined) updateData.gallery = gallery;
     if (content !== undefined) updateData.content = content;
 
     const post = await prisma.post.update({
@@ -140,7 +147,7 @@ export const updatePost = async (req: Request, res: Response) => {
       data: updateData,
     });
 
-    res.json({
+    return res.json({
       id: post.id,
       title: post.title,
       excerpt: post.excerpt,
@@ -148,6 +155,7 @@ export const updatePost = async (req: Request, res: Response) => {
       read_time: post.readTime,
       published_at: post.publishedAt,
       cover_image: post.coverImage,
+      gallery: post.gallery,
       content: post.content,
       created_at: post.createdAt.toISOString(),
     });
@@ -158,7 +166,7 @@ export const updatePost = async (req: Request, res: Response) => {
         return res.status(404).json({ error: 'Post not found' });
       }
     }
-    res.status(500).json({ error: 'Failed to update post' });
+    return res.status(500).json({ error: 'Failed to update post' });
   }
 };
 
@@ -171,7 +179,7 @@ export const deletePost = async (req: Request, res: Response) => {
       where: { id: Number(id) },
     });
 
-    res.status(204).send();
+    return res.status(204).send();
   } catch (error) {
     console.error('Error deleting post:', error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -179,6 +187,6 @@ export const deletePost = async (req: Request, res: Response) => {
         return res.status(404).json({ error: 'Post not found' });
       }
     }
-    res.status(500).json({ error: 'Failed to delete post' });
+    return res.status(500).json({ error: 'Failed to delete post' });
   }
 };

@@ -1,25 +1,44 @@
 import { Prisma } from '@prisma/client';
 import { Request, Response } from 'express';
-import prisma from '../config/database'; // 假设这是你的 prisma 实例路径
+import prisma from '../config/database';
 
-// 定义 Request Body 接口，以获得更好的类型提示（可选，但推荐）
+// 定义 Request Body 接口
 interface CreatePromptBody {
   title: string;
   category: string;
   platforms: string[];
   preview?: string;
   prompt: string;
-  cover_image?: string;
+  cover_image?: string | null;
 }
 
+// ------------------------------------------------------------------
+// 辅助函数：统一返回格式
+// 作用：统一将 DB 的驼峰命名转为 API 的下划线命名，且处理 JSON 类型断言
+// ------------------------------------------------------------------
+const formatPromptResponse = (prompt: any) => ({
+  id: prompt.id,
+  title: prompt.title,
+  category: prompt.category,
+  // Prisma 的 Json 类型通常需要断言，这里处理为空数组的情况
+  platforms: (prompt.platforms as unknown as string[]) || [],
+  preview: prompt.preview,
+  prompt: prompt.prompt,
+  cover_image: prompt.coverImage,
+  created_at: prompt.createdAt ? prompt.createdAt.toISOString() : new Date().toISOString(),
+});
+
+// ------------------------------------------------------------------
 // GET /api/prompts - 获取所有提示词
-export const getAllPrompts = async (req: Request, res: Response) => {
+// ------------------------------------------------------------------
+export const getAllPrompts = async (req: Request, res: Response): Promise<any> => {
   try {
     const { category } = req.query;
 
-    const where: { category?: string } = {};
+    // 使用 Prisma 提供的类型，而不是手写对象
+    const where: Prisma.PromptWhereInput = {};
     
-    // 修复：确保 category 确实存在且是字符串，避免 String(undefined) 或数组转换问题
+    // 确保 category 是字符串
     if (category && typeof category === 'string') {
       where.category = category;
     }
@@ -30,33 +49,24 @@ export const getAllPrompts = async (req: Request, res: Response) => {
     });
 
     const response = {
-      prompts: prompts.map((prompt) => ({
-        id: prompt.id,
-        title: prompt.title,
-        category: prompt.category,
-        // 修复：Prisma JSON 类型需断言，建议使用 unknown 先转一下
-        platforms: prompt.platforms as unknown as string[],
-        preview: prompt.preview,
-        prompt: prompt.prompt,
-        cover_image: prompt.coverImage,
-        created_at: prompt.createdAt.toISOString(),
-      })),
+      prompts: prompts.map(formatPromptResponse),
     };
 
-    res.json(response);
+    return res.json(response);
   } catch (error) {
     console.error('Error fetching prompts:', error);
-    res.status(500).json({ error: 'Failed to fetch prompts' });
+    return res.status(500).json({ error: 'Failed to fetch prompts' });
   }
 };
 
+// ------------------------------------------------------------------
 // GET /api/prompts/:id - 获取单个提示词详情
-export const getPromptById = async (req: Request, res: Response) => {
+// ------------------------------------------------------------------
+export const getPromptById = async (req: Request, res: Response): Promise<any> => {
   try {
     const { id } = req.params;
     const promptId = Number(id);
 
-    // 修复：增加 NaN 检查，防止数据库查询抛出异常
     if (isNaN(promptId)) {
       return res.status(400).json({ error: 'Invalid ID format' });
     }
@@ -66,30 +76,21 @@ export const getPromptById = async (req: Request, res: Response) => {
     });
 
     if (!prompt) {
-      // 修复：加上 return 确保函数执行结束
       return res.status(404).json({ error: 'Prompt not found' });
     }
 
-    res.json({
-      id: prompt.id,
-      title: prompt.title,
-      category: prompt.category,
-      platforms: prompt.platforms as unknown as string[],
-      preview: prompt.preview,
-      prompt: prompt.prompt,
-      cover_image: prompt.coverImage,
-      created_at: prompt.createdAt.toISOString(),
-    });
+    return res.json(formatPromptResponse(prompt));
   } catch (error) {
     console.error('Error fetching prompt:', error);
-    res.status(500).json({ error: 'Failed to fetch prompt' });
+    return res.status(500).json({ error: 'Failed to fetch prompt' });
   }
 };
 
+// ------------------------------------------------------------------
 // POST /api/prompts - 创建新提示词
-export const createPrompt = async (req: Request, res: Response) => {
+// ------------------------------------------------------------------
+export const createPrompt = async (req: Request, res: Response): Promise<any> => {
   try {
-    // 显式解构并重命名 body 中的 prompt 字段，避免变量名混淆
     const {
       title,
       category,
@@ -97,12 +98,14 @@ export const createPrompt = async (req: Request, res: Response) => {
       preview,
       prompt: promptContent,
       cover_image,
-    } = req.body as CreatePromptBody & { cover_image?: string };
+    } = req.body as CreatePromptBody;
 
+    // 必填项校验
     if (!title || !category || !promptContent) {
       return res.status(400).json({ error: 'title, category and prompt are required' });
     }
 
+    // 数组校验
     if (!Array.isArray(platforms) || platforms.length === 0) {
       return res.status(400).json({ error: 'platforms must be a non-empty array' });
     }
@@ -111,86 +114,83 @@ export const createPrompt = async (req: Request, res: Response) => {
       data: {
         title,
         category,
-        platforms,
-        preview: preview || '', // 处理可能为 undefined 的情况
+        platforms, // Prisma 会自动处理 string[] 到 Json 的转换
+        preview: preview || '',
         prompt: promptContent,
-        coverImage: cover_image,
+        coverImage: cover_image || null, // API 下划线 -> DB 驼峰
       },
     });
 
-    res.status(201).json({
-      id: newPrompt.id,
-      title: newPrompt.title,
-      category: newPrompt.category,
-      platforms: newPrompt.platforms as unknown as string[],
-      preview: newPrompt.preview,
-      prompt: newPrompt.prompt,
-      cover_image: newPrompt.coverImage,
-      created_at: newPrompt.createdAt.toISOString(),
-    });
+    return res.status(201).json(formatPromptResponse(newPrompt));
   } catch (error) {
     console.error('Error creating prompt:', error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // P2002: Unique constraint failed
       if (error.code === 'P2002') {
         return res.status(409).json({ error: 'Prompt already exists' });
       }
     }
-    res.status(500).json({ error: 'Failed to create prompt' });
+    return res.status(500).json({ error: 'Failed to create prompt' });
   }
 };
 
+// ------------------------------------------------------------------
 // PUT /api/prompts/:id - 更新提示词
-export const updatePrompt = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { title, category, platforms, preview, prompt: promptContent, cover_image } = req.body;
-  const promptId = Number(id);
-
-  if (isNaN(promptId)) {
-    return res.status(400).json({ error: 'Invalid ID format' });
-  }
-
-  if (platforms && !Array.isArray(platforms)) {
-    return res.status(400).json({ error: 'Platforms must be an array of strings' });
-  }
-
+// ------------------------------------------------------------------
+export const updatePrompt = async (req: Request, res: Response): Promise<any> => {
   try {
-    const updateData: Record<string, unknown> = {};
-    
-    if (title) updateData.title = title;
-    if (category) updateData.category = category;
-    if (platforms) updateData.platforms = platforms;
-    if (preview !== undefined) updateData.preview = preview;
-    if (promptContent) updateData.prompt = promptContent;
-    if (cover_image !== undefined) updateData.coverImage = cover_image;
+    const { id } = req.params;
+    const promptId = Number(id);
 
+    // 类型断言为 Partial，因为更新时字段都是可选的
+    const { 
+      title, 
+      category, 
+      platforms, 
+      preview, 
+      prompt: promptContent, 
+      cover_image 
+    } = req.body as Partial<CreatePromptBody>;
+
+    if (isNaN(promptId)) {
+      return res.status(400).json({ error: 'Invalid ID format' });
+    }
+
+    // 如果传了 platforms，必须校验格式
+    if (platforms !== undefined && (!Array.isArray(platforms) || platforms.length === 0)) {
+      return res.status(400).json({ error: 'Platforms must be a non-empty array' });
+    }
+
+    // 优化：直接在 data 中构建，避免使用 Record<string, unknown> 导致的类型丢失
     const updatedPrompt = await prisma.prompt.update({
       where: { id: promptId },
-      data: updateData,
+      data: {
+        ...(title && { title }),
+        ...(category && { category }),
+        ...(platforms && { platforms }), // 如果 platforms 存在，则更新
+        ...(preview !== undefined && { preview }),
+        ...(promptContent && { prompt: promptContent }),
+        ...(cover_image !== undefined && { coverImage: cover_image }),
+      },
     });
 
-    res.json({
-      id: updatedPrompt.id,
-      title: updatedPrompt.title,
-      category: updatedPrompt.category,
-      platforms: updatedPrompt.platforms as unknown as string[],
-      preview: updatedPrompt.preview,
-      prompt: updatedPrompt.prompt,
-      cover_image: updatedPrompt.coverImage,
-      created_at: updatedPrompt.createdAt.toISOString(),
-    });
+    return res.json(formatPromptResponse(updatedPrompt));
   } catch (error) {
     console.error('Error updating prompt:', error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // P2025: Record to update not found
       if (error.code === 'P2025') {
         return res.status(404).json({ error: 'Prompt not found' });
       }
     }
-    res.status(500).json({ error: 'Failed to update prompt' });
+    return res.status(500).json({ error: 'Failed to update prompt' });
   }
 };
 
+// ------------------------------------------------------------------
 // DELETE /api/prompts/:id - 删除提示词
-export const deletePrompt = async (req: Request, res: Response) => {
+// ------------------------------------------------------------------
+export const deletePrompt = async (req: Request, res: Response): Promise<any> => {
   try {
     const { id } = req.params;
     const promptId = Number(id);
@@ -203,7 +203,7 @@ export const deletePrompt = async (req: Request, res: Response) => {
       where: { id: promptId },
     });
 
-    res.status(204).send();
+    return res.status(204).send();
   } catch (error) {
     console.error('Error deleting prompt:', error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -211,6 +211,6 @@ export const deletePrompt = async (req: Request, res: Response) => {
         return res.status(404).json({ error: 'Prompt not found' });
       }
     }
-    res.status(500).json({ error: 'Failed to delete prompt' });
+    return res.status(500).json({ error: 'Failed to delete prompt' });
   }
 };

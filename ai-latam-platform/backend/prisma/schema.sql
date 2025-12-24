@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS tools (
   affiliate_link VARCHAR(500),
   logo_url VARCHAR(500),
   image_url VARCHAR(500),
+  gallery JSONB,
   is_featured BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -58,6 +59,7 @@ CREATE TABLE IF NOT EXISTS posts (
   published_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
   content TEXT,
   cover_image VARCHAR(500),
+  gallery JSONB,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 

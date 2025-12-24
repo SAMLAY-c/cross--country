@@ -10,6 +10,7 @@ type Post = {
   readTime: string;
   publishedAt: string;
   coverImage?: string | null;
+  gallery?: string[] | null;
 };
 
 const DUMMY_POSTS_TYPED: Post[] = DUMMY_POSTS;
@@ -53,11 +54,12 @@ async function getPosts(): Promise<Post[]> {
     return data.posts.map((row) => ({
       id: row.id,
       title: row.title,
-      excerpt: row.excerpt || "暂无摘要。",
-      tag: row.tag || "深度测评",
-      readTime: row.readTime || row.read_time || "5 Min Read",
-      publishedAt: formatPublishedAt(row.published_at),
+      excerpt: (row as { excerpt?: string | null }).excerpt || "暂无摘要。",
+      tag: (row as { tag?: string | null }).tag || "深度测评",
+      readTime: (row as { read_time?: string | null }).read_time || "5 Min Read",
+      publishedAt: formatPublishedAt((row as { published_at?: string | null }).published_at),
       coverImage: (row as { cover_image?: string | null }).cover_image ?? null,
+      gallery: (row as { gallery?: string[] | null }).gallery ?? null,
     }));
   } catch {
     return DUMMY_POSTS_TYPED;
@@ -137,6 +139,23 @@ export default async function BlogPage() {
                       alt={post.title}
                       className="h-40 w-full object-cover"
                     />
+                  </div>
+                ) : null}
+                {post.gallery?.length ? (
+                  <div className="mb-4 flex gap-2">
+                    {post.gallery.slice(0, 3).map((item) => (
+                      <div
+                        key={item}
+                        className="h-14 w-14 overflow-hidden rounded-lg border border-white/10"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={item}
+                          alt={post.title}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    ))}
                   </div>
                 ) : null}
                 <div className="flex items-center justify-between text-xs uppercase tracking-[0.25em] text-white/45">
