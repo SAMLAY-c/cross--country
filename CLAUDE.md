@@ -32,6 +32,7 @@ This is a **Chinese-language AI platform** for the Latin American market, built 
 3. **Blog Section**: With Supabase Realtime live updates
 4. **Admin Panel**: CRUD operations with mock data fallback
 5. **Content Aggregation**: Automated scripts for fetching fresh content
+6. **Learning Section** (`/learning`): AI technology notes with Markdown editor and Realtime sync
 
 ## Project Structure
 
@@ -45,6 +46,7 @@ ai-latam-platform/
 │   │   ├── tools/        # Tools listing page
 │   │   ├── prompts/      # Prompts library page
 │   │   ├── blog/         # Blog posts page (with Supabase Realtime)
+│   │   ├── learning/     # Learning notes page with Markdown editor (Realtime)
 │   │   └── admin/        # Admin CRUD dashboard (uses mock data fallback)
 │   ├── components/       # Reusable UI components
 │   └── lib/              # Utilities
@@ -81,7 +83,26 @@ scripts/
 
 ## Development Commands
 
-### Frontend (from project root)
+### Starting the Full Stack
+
+**Quick start both services** (from project root):
+```bash
+# Terminal 1: Frontend
+cd ai-latam-platform
+npm run dev          # Runs on http://localhost:7240
+
+# Terminal 2: Backend
+cd ai-latam-platform/backend
+npm run dev          # Runs on http://localhost:3001
+```
+
+**Health checks:**
+```bash
+curl http://localhost:3001/health  # Backend health check
+curl http://localhost:7240          # Frontend should return 200
+```
+
+### Frontend (from `/ai-latam-platform`)
 
 ```bash
 npm run dev          # Start Next.js dev server on port 7240
@@ -90,10 +111,10 @@ npm run start        # Start production server
 npm run lint         # Run ESLint
 ```
 
-### Backend (from `/backend` directory)
+### Backend (from `/ai-latam-platform/backend`)
 
 ```bash
-cd backend
+cd ai-latam-platform/backend
 npm install          # Install dependencies first time
 
 # Environment setup (create .env from .env.example)
@@ -113,9 +134,11 @@ npm run prisma:studio     # Open Prisma Studio (GUI for DB)
 npx prisma migrate reset  # Reset database (destructive)
 ```
 
-### Content Aggregation Scripts (from project root)
+### Content Aggregation Scripts (from `/ai-latam-platform`)
 
 ```bash
+cd ai-latam-platform
+
 # Set environment variables first
 export NEXT_PUBLIC_SUPABASE_URL="your_supabase_url"
 export SUPABASE_SERVICE_ROLE_KEY="your_service_role_key"
@@ -173,10 +196,38 @@ The blog page uses Supabase Realtime for live updates:
 
 Each page has unique accent colors (defined in Tailwind config):
 - **Landing**: Purple gradient
-- **Tools**: Blue theme
-- **Prompts**: Emerald theme
-- **Blog**: Amber theme
+- **Tools**: Blue theme (`#66E0FF`)
+- **Prompts**: Emerald theme (`#C38BFF`)
+- **Blog**: Amber theme (`#FFB347`)
+- **Learning**: Yellow theme (`#d4ff00`)
 - **Admin**: Slate theme
+
+### Component Architecture Patterns
+
+**Server Components by Default:**
+- Use `export const dynamic = "force-dynamic"` for dynamic routes
+- Server components handle data fetching and initial rendering
+- Pass serialized data to client components
+
+**Client Components for Interactivity:**
+- Extract interactive logic to separate files with `"use client"` directive
+- Use context providers (`RealtimePostsProvider`, `RealtimeLearningNotesProvider`) for shared state
+- Implement graceful degradation - Realtime failures should not break UI
+
+**Example Pattern:**
+```typescript
+// Server component fetches data
+export default async function Page() {
+  const data = await fetchData()
+  return <InteractiveClientComponent initialData={data} />
+}
+
+// Client component handles interactivity
+"use client"
+export function InteractiveClientComponent({ initialData }) {
+  // Interactive logic here
+}
+```
 
 ## API Endpoints
 
@@ -215,6 +266,12 @@ Three main tables in PostgreSQL (Supabase):
 - `created_at` (auto)
 
 Indexes exist on filter fields (tag, category, is_featured, published_at).
+
+### `learning_notes` (New - Learning Content)
+- `id`, `title`, `slug`, `category`, `summary`, `tags` (required)
+- `cover_image`, `content`, `updated_at` (nullable)
+- **Realtime**: Full CRUD operations with Supabase Realtime
+- **Note**: Not yet in Prisma schema - uses direct Supabase queries
 
 ## Environment Variables
 
@@ -315,3 +372,204 @@ See [`scripts/README.md`](ai-latam-platform/scripts/README.md) for detailed guid
 - Use Simplified Chinese for UI text
 - Keep code comments in English or Chinese as appropriate
 - Maintain consistent terminology across pages
+
+## Key Development Patterns
+
+### 1. Error Handling Strategy
+**Silent degradation is critical:**
+- Supabase Realtime failures should console.warn, not throw
+- API failures fall back to mock data seamlessly
+- User gets working UI with warnings, not broken pages
+- Example: Realtime subscriptions wrap channel.subscribe in try/catch
+
+### 2. Data Fetching Pattern
+```typescript
+async function getData() {
+  try {
+    // Try backend API first
+    const response = await fetch(`${API_BASE}/api/resource`)
+    if (!response.ok) throw new Error("API failed")
+    return await response.json()
+  } catch {
+    try {
+      // Fallback: Direct Supabase query
+      const { data } = await supabase.from("table").select("*")
+      return data
+    } catch {
+      // Final fallback: Mock data
+      return DUMMY_DATA
+    }
+  }
+}
+```
+
+### 3. Styling Conventions
+**Tailwind v4 with CSS variables:**
+- Use `--accent`, `--accent-glow`, `--accent-contrast` for theming
+- Radial gradients for hero sections: `bg-[radial-gradient(ellipse_at_top,_var(--accent-glow))]
+`
+- Brightness overlays for dark mode: `brightness-[0.85] dark:brightness-75`
+- Consistent shadows: `shadow-lg shadow-black/20`
+- Card hover effects: `hover:scale-105 transition-transform duration-300`
+
+### 4. Prisma Naming Convention
+**Database camelCase vs API snake_case:**
+- Prisma models: `Tool`, `Prompt`, `Post`
+- DB columns: camelCase in schema (`createdAt`), mapped to snake_case in DB (`created_at`)
+- API responses: snake_case (to match Supabase)
+- Frontend: Use whichever matches the data source
+
+### 5. Working with JSON Fields
+**For `platforms`, `gallery` fields:**
+```typescript
+// In Prisma queries
+const prompt = await prisma.prompt.findFirst()
+const platforms = prompt.platforms as string[] // Cast to array
+
+// In Supabase queries
+const { data } = await supabase.from("prompts").select("platforms")
+// Automatically parsed as JSON array
+```
+
+### 6. Supabase Realtime Implementation
+**Pattern for realtime features:**
+```typescript
+"use client"
+import { useEffect, useState } from "react"
+import { supabase } from "@/lib/supabase"
+
+export function RealtimeComponent() {
+  const [data, setData] = useState([])
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    // Initial fetch
+    fetchData()
+
+    // Subscribe to changes
+    const channel = supabase
+      .channel("table_changes")
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "your_table"
+      }, (payload) => {
+        setData(prev => [...prev, payload.new])
+      })
+      .subscribe((status) => {
+        if (status === "SUBSCRIPTION_ERROR") {
+          console.warn("Realtime subscription failed")
+          setError("实时同步失败，使用手动刷新")
+        }
+      })
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [])
+
+  return <div>{/* render data */}</div>
+}
+```
+
+**Critical:** Always implement cleanup and error handling for Realtime subscriptions.
+
+## Troubleshooting
+
+### Backend fails to start
+1. Check if port 3001 is already in use: `lsof -ti:3001`
+2. Verify DATABASE_URL is correctly set in `backend/.env`
+3. Run `npm run prisma:generate` to ensure Prisma Client is generated
+4. Check Supabase connection: Test with `psql` connection string
+
+### Frontend shows mock data warning
+1. Verify backend is running: `curl http://localhost:3001/health`
+2. Check `NEXT_PUBLIC_API_BASE_URL` in `.env.local`
+3. Look for CORS errors in browser console
+4. Verify backend logs for request errors
+
+### Supabase Realtime not working
+1. Check Replication settings in Supabase Dashboard
+2. Verify table has Realtime enabled
+3. Check browser console for WebSocket errors
+4. Ensure anon key has correct permissions
+
+### Database changes not reflecting
+```bash
+cd ai-latam-platform/backend
+npx prisma generate        # Regenerate Prisma Client
+npx prisma migrate dev     # Apply new migrations
+npm run dev               # Restart backend
+```
+
+### Port conflicts
+```bash
+# Kill processes on specific ports
+kill -9 $(lsof -ti:7240)  # Frontend
+kill -9 $(lsof -ti:3001)  # Backend
+```
+
+## Quick Reference
+
+### File Locations
+- **Frontend pages**: `/ai-latam-platform/src/app/`
+- **Components**: `/ai-latam-platform/src/components/`
+- **Backend API**: `/ai-latam-platform/backend/src/`
+- **Database schema**: `/ai-latam-platform/backend/prisma/schema.prisma`
+- **Mock data**: `/ai-latam-platform/src/lib/mock-data.ts`
+- **Supabase client**: `/ai-latam-platform/src/lib/supabase.ts`
+
+### Key URLs (Development)
+- Frontend: http://localhost:7240
+- Backend API: http://localhost:3001
+- Health check: http://localhost:3001/health
+- Admin panel: http://localhost:7240/admin
+- Learning page: http://localhost:7240/learning
+
+### Environment Variable Checklist
+- [ ] `NEXT_PUBLIC_SUPABASE_URL` - Supabase project URL
+- [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase anonymous key
+- [ ] `DATABASE_URL` - PostgreSQL connection string (backend)
+- [ ] `DIRECT_URL` - Direct PostgreSQL connection (backend)
+- [ ] `SUPABASE_SERVICE_ROLE_KEY` - For admin operations (scripts only)
+
+### Common Prisma Commands
+```bash
+npx prisma generate       # Generate Prisma Client from schema
+npx prisma migrate dev    # Create and apply new migration
+npx prisma migrate deploy # Apply migrations in production
+npx prisma studio         # Open Prisma Studio (GUI)
+npx prisma migrate reset  # Reset database (DESTRUCTIVE)
+npx prisma db pull        # Pull schema from database
+npx prisma db push        # Push schema to database (dev only)
+```
+
+### Database Table Quick Reference
+| Table | Purpose | Key Fields |
+|-------|---------|------------|
+| `tools` | AI tools directory | name, tag, category, is_featured |
+| `prompts` | Prompt templates | title, category, platforms (JSON) |
+| `posts` | Blog articles | title, published_at, tag, content |
+| `learning_notes` | Learning content | title, slug, category, tags (JSON) |
+
+### Page Routes
+| Route | Component | Theme Color |
+|-------|-----------|-------------|
+| `/` | Landing page | Purple |
+| `/tools` | AI tools directory | Blue (#66E0FF) |
+| `/prompts` | Prompt library | Purple (#C38BFF) |
+| `/blog` | Blog posts | Amber (#FFB347) |
+| `/learning` | Learning notes | Yellow (#d4ff00) |
+| `/admin` | Admin dashboard | Slate |
+
+### Adding a New Feature: Checklist
+1. [ ] Create page in `/ai-latam-platform/src/app/feature-name/`
+2. [ ] Define theme color in Tailwind config
+3. [ ] Add mock data to `/ai-latam-platform/src/lib/mock-data.ts`
+4. [ ] Create backend API routes in `/backend/src/`
+5. [ ] Update Prisma schema if new table needed
+6. [ ] Run `npx prisma migrate dev` and `npx prisma generate`
+7. [ ] Implement fallback pattern (API → Supabase → Mock)
+8. [ ] Add navigation link in `/ai-latam-platform/src/components/nav.tsx`
+9. [ ] Test with backend stopped (verify fallback works)
+10. [ ] Add Realtime if needed (follow existing patterns)
