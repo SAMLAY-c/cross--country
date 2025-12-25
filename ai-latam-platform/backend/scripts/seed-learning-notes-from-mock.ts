@@ -17,6 +17,7 @@ type LearningNotePayload = {
 };
 
 const API_BASE = process.env.API_BASE_URL || 'http://localhost:3001';
+const API_ROUTE_SECRET = process.env.API_ROUTE_SECRET || 'Zhiailqx322@';
 
 async function seed() {
   console.log('🌱 Seeding learning_notes from frontend mock data...');
@@ -41,7 +42,10 @@ async function seed() {
     try {
       const response = await fetch(`${API_BASE}/api/learning-notes`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-secret': API_ROUTE_SECRET
+        },
         body: JSON.stringify(payload),
       });
 

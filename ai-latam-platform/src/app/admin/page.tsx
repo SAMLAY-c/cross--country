@@ -8,6 +8,10 @@ import ImageGalleryUpload from "@/components/image-gallery-upload";
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
 
+// API secret for write operations (only on server-side or when using backend proxy)
+// For security, this should never be exposed to client-side code
+const API_ROUTE_SECRET = process.env.NEXT_PUBLIC_API_ROUTE_SECRET;
+
 type Tool = {
   id: number;
   name: string;
@@ -171,12 +175,23 @@ async function apiRequest<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
+  const isWriteOperation = ["POST", "PUT", "DELETE", "PATCH"].includes(
+    options.method?.toUpperCase() || "GET",
+  );
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(options.headers as Record<string, string>),
+  };
+
+  // Add API secret for write operations
+  if (isWriteOperation && API_ROUTE_SECRET) {
+    headers["x-api-secret"] = API_ROUTE_SECRET;
+  }
+
   const response = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
     ...options,
+    headers,
   });
 
   if (!response.ok) {
@@ -448,9 +463,16 @@ export default function AdminPage() {
       );
 
       const seedRequest = async (path: string, payload: Record<string, unknown>) => {
+        const headers: Record<string, string> = { "Content-Type": "application/json" };
+
+        // Add API secret for write operations
+        if (API_ROUTE_SECRET) {
+          headers["x-api-secret"] = API_ROUTE_SECRET;
+        }
+
         const response = await fetch(`${API_BASE}${path}`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers,
           body: JSON.stringify(payload),
         });
 

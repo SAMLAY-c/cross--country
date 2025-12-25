@@ -73,6 +73,11 @@ export const getPostById = async (req: Request, res: Response) => {
 // POST /api/posts - 创建新文章
 export const createPost = async (req: Request, res: Response) => {
   try {
+    const apiSecret = req.header('x-api-secret');
+    if (!apiSecret || apiSecret !== process.env.API_ROUTE_SECRET) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
     const {
       title,
       excerpt,
