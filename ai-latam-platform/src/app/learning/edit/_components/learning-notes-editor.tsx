@@ -208,6 +208,34 @@ export default function LearningNotesEditor({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [form, selectedId, handleSave]);
 
+  /**
+   * 处理拖拽排序
+   */
+  const handleReorder = async (reorderedNotes: LearningNote[]) => {
+    try {
+      // 更新本地状态
+      setNotes(reorderedNotes);
+
+      // 调用批量排序 API
+      const reorderData = reorderedNotes.map((note, index) => ({
+        id: note.id,
+        order_index: index,
+      }));
+
+      await apiRequest("/api/learning-notes/batch", {
+        method: "PATCH",
+        body: JSON.stringify({ action: "reorder", data: reorderData }),
+      });
+
+      setSuccessMessage("排序已保存");
+      setTimeout(() => setSuccessMessage(null), 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "排序失败");
+      // 恢复原顺序
+      setNotes(notes);
+    }
+  };
+
   return (
     <div className="flex h-screen">
       {/* 左侧笔记列表面板 */}
@@ -218,6 +246,7 @@ export default function LearningNotesEditor({
           onSelect={handleSelectNote}
           onNew={handleCreateNew}
           onDelete={handleDelete}
+          onReorder={handleReorder}
           categories={Array.from(new Set(notes.map((n) => n.category)))}
         />
       </aside>

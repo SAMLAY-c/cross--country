@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { DndContext, closestCenter, DragEndEvent } from "@dnd-kit/core";
+import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import type { LearningNote } from "./types";
 
 type Props = {
@@ -9,12 +12,97 @@ type Props = {
   onSelect: (note: LearningNote) => void;
   onNew: () => void;
   onDelete: (id: number) => void;
+  onReorder: (notes: LearningNote[]) => void;
   categories: string[];
 };
 
 /**
+ * 可排序的笔记卡片组件
+ */
+function SortableNoteItem({
+  note,
+  selectedId,
+  selectedIds,
+  onSelect,
+  onToggleSelect,
+}: {
+  note: LearningNote;
+  selectedId: number | null;
+  selectedIds: Set<number>;
+  onSelect: (note: LearningNote) => void;
+  onToggleSelect: (id: number) => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: note.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <div
+        className={`rounded-lg border p-3 cursor-pointer transition ${
+          selectedId === note.id
+            ? "border-[var(--accent)] bg-[var(--accent-glow)]"
+            : "border-[#333333] bg-white/3 hover:border-white/20"
+        }`}
+        onClick={() => onSelect(note)}
+      >
+        <div className="flex items-start gap-2">
+          {/* 拖拽手柄 */}
+          <button
+            {...attributes}
+            {...listeners}
+            className="mt-1 cursor-grab active:cursor-grabbing text-white/30 hover:text-white/50"
+          >
+            ⋮⋮
+          </button>
+
+          <input
+            type="checkbox"
+            checked={selectedIds.has(note.id)}
+            onChange={(e) => {
+              e.stopPropagation();
+              onToggleSelect(note.id);
+            }}
+            className="mt-1 cursor-pointer"
+          />
+
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-semibold text-white truncate">
+              {note.title}
+            </h3>
+            {note.summary && (
+              <p className="text-xs text-white/50 truncate mt-1">{note.summary}</p>
+            )}
+            <div className="flex flex-wrap gap-1 mt-2">
+              {note.tags.slice(0, 3).map((tag) => (
+                <span
+                  key={tag}
+                  className="text-[10px] rounded border border-[#2a2a2a] px-1.5 py-0.5 text-white/60"
+                >
+                  {tag}
+                </span>
+              ))}
+              {note.tags.length > 3 && (
+                <span className="text-[10px] text-white/40">
+                  +{note.tags.length - 3}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
  * 笔记列表面板
- * 功能：搜索、分类筛选、多选、批量删除
+ * 功能：搜索、分类筛选、多选、批量删除、拖拽排序
  */
 export default function NotesListPanel({
   notes,
@@ -22,6 +110,7 @@ export default function NotesListPanel({
   onSelect,
   onNew,
   onDelete,
+  onReorder,
   categories,
 }: Props) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,8 +130,12 @@ export default function NotesListPanel({
     });
   }, [notes, searchQuery, selectedCategory]);
 
-  // 按分类分组
+  // 按分类分组（仅在未筛选或查看所有分类时）
   const groupedNotes = useMemo(() => {
+    if (selectedCategory !== "all") {
+      return [["当前分类", filteredNotes] as [string, LearningNote[]]];
+    }
+
     const map = new Map<string, LearningNote[]>();
     filteredNotes.forEach((note) => {
       const bucket = map.get(note.category) ?? [];
@@ -50,7 +143,7 @@ export default function NotesListPanel({
       map.set(note.category, bucket);
     });
     return Array.from(map.entries());
-  }, [filteredNotes]);
+  }, [filteredNotes, selectedCategory]);
 
   // 切换选择
   const handleToggleSelect = (id: number) => {
@@ -82,6 +175,33 @@ export default function NotesListPanel({
       await onDelete(id);
     }
     setSelectedIds(new Set());
+  };
+
+  // 拖拽结束处理
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    // 在筛选状态下不允许拖拽排序
+    if (searchQuery || selectedCategory !== "all") {
+      return;
+    }
+
+    // 重新排序所有笔记
+    const oldIndex = notes.findIndex((n) => n.id === active.id);
+    const newIndex = notes.findIndex((n) => n.id === over.id);
+
+    const newNotes = [...notes];
+    const [movedNote] = newNotes.splice(oldIndex, 1);
+    newNotes.splice(newIndex, 0, movedNote);
+
+    // 更新 order_index
+    const reorderedNotes = newNotes.map((note, index) => ({
+      ...note,
+      orderIndex: index,
+    }));
+
+    onReorder(reorderedNotes);
   };
 
   return (
@@ -136,6 +256,13 @@ export default function NotesListPanel({
             </button>
           </div>
         )}
+
+        {/* 拖拽提示 */}
+        {!searchQuery && selectedCategory === "all" && (
+          <p className="text-xs text-white/30">
+            💡 拖动 ⋮⋮ 手柄可以重新排序笔记
+          </p>
+        )}
       </div>
 
       {/* 全选按钮 */}
@@ -164,63 +291,36 @@ export default function NotesListPanel({
               : "暂无笔记，点击上方按钮创建"}
           </div>
         ) : (
-          groupedNotes.map(([category, items]) => (
-            <div key={category}>
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-white/50 mb-3">
-                {category} ({items.length})
-              </p>
-              <div className="space-y-2">
-                {items.map((note) => (
-                  <div
-                    key={note.id}
-                    className={`rounded-lg border p-3 cursor-pointer transition ${
-                      selectedId === note.id
-                        ? "border-[var(--accent)] bg-[var(--accent-glow)]"
-                        : "border-[#333333] bg-white/3 hover:border-white/20"
-                    }`}
-                    onClick={() => onSelect(note)}
-                  >
-                    <div className="flex items-start gap-2">
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.has(note.id)}
-                        onChange={(e) => {
-                          e.stopPropagation();
-                          handleToggleSelect(note.id);
-                        }}
-                        className="mt-1 cursor-pointer"
+          <DndContext
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            {groupedNotes.map(([category, items]) => (
+              <SortableContext
+                key={category}
+                items={items.map((n) => n.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.35em] text-white/50 mb-3">
+                    {category} ({items.length})
+                  </p>
+                  <div className="space-y-2">
+                    {items.map((note) => (
+                      <SortableNoteItem
+                        key={note.id}
+                        note={note}
+                        selectedId={selectedId}
+                        selectedIds={selectedIds}
+                        onSelect={onSelect}
+                        onToggleSelect={handleToggleSelect}
                       />
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-semibold text-white truncate">
-                          {note.title}
-                        </h3>
-                        {note.summary && (
-                          <p className="text-xs text-white/50 truncate mt-1">
-                            {note.summary}
-                          </p>
-                        )}
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          {note.tags.slice(0, 3).map((tag) => (
-                            <span
-                              key={tag}
-                              className="text-[10px] rounded border border-[#2a2a2a] px-1.5 py-0.5 text-white/60"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                          {note.tags.length > 3 && (
-                            <span className="text-[10px] text-white/40">
-                              +{note.tags.length - 3}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-          ))
+                </div>
+              </SortableContext>
+            ))}
+          </DndContext>
         )}
       </div>
     </div>
