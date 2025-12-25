@@ -103,3 +103,37 @@ model Post {
   @@index([createdAt])
   @@map("posts")
 }
+
+// ==================== Learning_Notes 表 ====================
+// 字段说明:
+// - id: 主键，自增
+// - title: 笔记标题，必填，唯一
+// - slug: URL 友好的唯一标识符，必填，唯一
+// - category: 分类，必填（如 "提示词工程", "智能体", "RAG"）
+// - summary: 摘要，可选（用于列表展示）
+// - tags: 标签数组，必填（JSON 数组，用于检索和筛选）
+// - cover_image: 封面图片 URL，可选
+// - content: Markdown 内容，必填（长文本，存储完整文章）
+// - order_index: 排序索引，可选（用于拖拽排序）
+// - updated_at: 最后更新时间，自动更新
+// - created_at: 创建时间，默认当前时间
+
+model LearningNote {
+  id         Int      @id @default(autoincrement())
+  title      String   @unique
+  slug       String   @unique
+  category   String
+  summary    String?  @db.Text
+  tags       Json     // 存储 ["Few-shot", "CoT", "Self-Consistency"]
+  coverImage String?  @map("cover_image")
+  content    String   @db.Text
+  orderIndex Int?     @map("order_index")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([category])
+  @@index([orderIndex])
+  @@index([updatedAt])
+  @@index([createdAt])
+  @@map("learning_notes")
+}
