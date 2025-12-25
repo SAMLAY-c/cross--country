@@ -2,7 +2,7 @@ import Link from "next/link";
 import ThemeToggle from "@/components/theme-toggle";
 
 type NavProps = {
-  currentPath?: "/tools" | "/prompts" | "/blog" | "/learning-guide" | "/";
+  currentPath?: "/tools" | "/prompts" | "/blog" | "/learning-guide" | "/learning" | "/";
 };
 
 const linkBase = "hidden sm:inline transition hover:text-amber-100";
@@ -40,6 +40,12 @@ export default function Nav({ currentPath }: NavProps) {
           href="/learning-guide"
         >
           学习指南
+        </Link>
+        <Link
+          className={`${linkBase} ${currentPath === "/learning" ? "text-[var(--accent)]" : ""}`}
+          href="/learning"
+        >
+          AI技术
         </Link>
       </div>
       <div className="flex items-center gap-3">

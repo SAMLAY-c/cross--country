@@ -2,28 +2,56 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Structure
+## Project Overview
 
-This is a monorepo containing:
+This is a **Chinese-language AI platform** for the Latin American market, built as a monorepo with:
 - **Frontend**: Next.js 16 app ( `/ai-latam-platform` ) - runs on port 7240
 - **Backend**: Express + Prisma API ( `/ai-latam-platform/backend` ) - runs on port 3001
 - **Database**: Supabase PostgreSQL
 - **Scripts**: Content aggregation scripts in `/ai-latam-platform/scripts`
 
+### Tech Stack
+
+**Frontend:**
+- Next.js 16 (App Router) with React 19
+- TypeScript 5
+- Tailwind CSS v4
+- Supabase client (`@supabase/supabase-js`)
+- Custom fonts: Fraunces (display), Space Grotesk (body), Manrope (UI)
+
+**Backend:**
+- Node.js with Express
+- TypeScript 5.7
+- Prisma ORM
+- Express-validator for input validation
+
+### Key Features
+
+1. **AI Tools Directory**: Curated list with filtering and affiliate links
+2. **Prompt Library**: Organized templates for various AI platforms
+3. **Blog Section**: With Supabase Realtime live updates
+4. **Admin Panel**: CRUD operations with mock data fallback
+5. **Content Aggregation**: Automated scripts for fetching fresh content
+
+## Project Structure
+
 ### Frontend Architecture
 
 ```
-src/
-├── app/              # Next.js App Router pages
-│   ├── page.tsx      # Landing page
-│   ├── tools/        # Tools listing page
-│   ├── prompts/      # Prompts library page
-│   ├── blog/         # Blog posts page (with Supabase Realtime)
-│   └── admin/        # Admin CRUD dashboard (uses mock data fallback)
-├── components/       # Reusable UI components
-└── lib/              # Utilities
-    ├── supabase.ts   # Supabase client (for direct DB queries)
-    └── mock-data.ts  # Dummy data for development/demo
+ai-latam-platform/
+├── src/
+│   ├── app/              # Next.js App Router pages
+│   │   ├── page.tsx      # Landing page
+│   │   ├── tools/        # Tools listing page
+│   │   ├── prompts/      # Prompts library page
+│   │   ├── blog/         # Blog posts page (with Supabase Realtime)
+│   │   └── admin/        # Admin CRUD dashboard (uses mock data fallback)
+│   ├── components/       # Reusable UI components
+│   └── lib/              # Utilities
+│       ├── supabase.ts   # Supabase client (for direct DB queries)
+│       └── mock-data.ts  # Dummy data for development/demo
+├── package.json          # Frontend dependencies
+└── next.config.ts        # Next.js configuration
 ```
 
 ### Backend Architecture
@@ -38,7 +66,8 @@ backend/
 │   ├── routes/                 # Express route definitions
 │   └── server.ts               # Express app entry point with CORS
 ├── Procfile                    # Render deployment config
-└── render.yaml                 # Render service specification
+├── render.yaml                 # Render service specification
+└── package.json                # Backend dependencies
 ```
 
 ### Content Aggregation Scripts
@@ -140,6 +169,15 @@ The blog page uses Supabase Realtime for live updates:
 - Listens for `INSERT` events on `posts` table
 - Auto-updates when new posts are added to database
 
+### Page-Specific Theming
+
+Each page has unique accent colors (defined in Tailwind config):
+- **Landing**: Purple gradient
+- **Tools**: Blue theme
+- **Prompts**: Emerald theme
+- **Blog**: Amber theme
+- **Admin**: Slate theme
+
 ## API Endpoints
 
 All backend routes are prefixed with `/api/`:
@@ -204,7 +242,7 @@ DATABASE_URL="postgresql://postgres.xxx:PASSWORD@aws-0-region.pooler.supabase.co
 
 ## CORS Configuration
 
-Backend ([`backend/src/server.ts`](ai-latam-platform/backend/src/server.ts:10-30)) uses environment-aware CORS:
+Backend ([`backend/src/server.ts`](ai-latam-platform/backend/src/server.ts)) uses environment-aware CORS:
 - `FRONTEND_URL` env variable controls allowed origins
 - Falls back to `http://localhost:7240` if not set
 - Logs blocked origins for debugging
