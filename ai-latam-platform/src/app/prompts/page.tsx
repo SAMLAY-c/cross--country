@@ -1,5 +1,6 @@
 import Nav from "@/components/nav";
-import PromptGrid, { type PromptItem } from "./prompt-grid";
+import { type PromptItem } from "./prompt-grid";
+import RealtimePromptsGrid from "./realtime-prompts-grid";
 import { DUMMY_PROMPTS } from "@/lib/mock-data";
 
 export const dynamic = "force-dynamic";
@@ -117,7 +118,7 @@ export default async function PromptSquarePage() {
               </div>
             </div>
 
-            <PromptGrid prompts={prompts} />
+            <RealtimePromptsGrid initialPrompts={prompts} />
           </div>
         </div>
     </div>

@@ -118,13 +118,14 @@ export const createLearningNote = async (req: Request, res: Response): Promise<a
     }
 
     // Prisma 写入（API下划线 -> DB驼峰）
+    // 将 tags 显式转换为 Prisma.JsonValue
     const note = await prisma.learningNote.create({
       data: {
         title,
         slug,
         category,
         summary,
-        tags,
+        tags: tags as Prisma.JsonValue,
         coverImage: cover_image,
         content,
         orderIndex: order_index,

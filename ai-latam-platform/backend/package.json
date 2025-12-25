@@ -20,6 +20,7 @@
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "express-validator": "^7.2.1",
+    "pg": "^8.16.3",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1"
   },
