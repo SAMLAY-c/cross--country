@@ -6,7 +6,9 @@ import { CategorySidebar } from "@/components/category-sidebar";
 import { supabase } from "@/lib/supabase";
 import { DUMMY_LEARNING_NOTES } from "@/lib/mock-data";
 
-export const dynamic = "force-dynamic";
+const REVALIDATE_SECONDS = 60 * 5;
+
+export const revalidate = REVALIDATE_SECONDS;
 
 type LearningNoteRow = {
   id: number;
