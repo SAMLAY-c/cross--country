@@ -147,6 +147,28 @@ body {
   animation: logo-spin 18s linear infinite;
 }
 
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-120%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(255, 255, 255, 0.2) 55%,
+    rgba(255, 255, 255, 0.08) 65%,
+    transparent 100%
+  );
+  animation: skeleton-shimmer 1.8s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+
 @keyframes hero-cycle {
   0% {
     opacity: 0;
@@ -239,6 +261,15 @@ body {
   }
 }
 
+@keyframes skeleton-shimmer {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-word,
   .loading-bar,
@@ -247,7 +278,8 @@ body {
   .orb-container,
   .orb-ring,
   .type-line,
-  .logo-orbit {
+  .logo-orbit,
+  .skeleton-shimmer::after {
     animation: none;
   }
 }

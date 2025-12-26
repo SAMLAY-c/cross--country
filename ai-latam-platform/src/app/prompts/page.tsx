@@ -3,9 +3,11 @@ import { type PromptItem } from "./prompt-grid";
 import RealtimePromptsGrid from "./realtime-prompts-grid";
 import { DUMMY_PROMPTS } from "@/lib/mock-data";
 
-export const dynamic = "force-dynamic";
-
 const DUMMY_PROMPTS_TYPED: PromptItem[] = DUMMY_PROMPTS;
+
+const REVALIDATE_SECONDS = 60 * 5;
+
+export const revalidate = REVALIDATE_SECONDS;
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
@@ -13,7 +15,7 @@ const API_BASE =
 async function getPrompts(): Promise<PromptItem[]> {
   try {
     const response = await fetch(`${API_BASE}/api/prompts`, {
-      cache: "no-store",
+      next: { revalidate: REVALIDATE_SECONDS },
     });
     if (!response.ok) {
       return DUMMY_PROMPTS_TYPED;

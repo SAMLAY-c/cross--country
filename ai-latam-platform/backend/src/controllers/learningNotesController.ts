@@ -56,6 +56,7 @@ export const getAllLearningNotes = async (req: Request, res: Response): Promise<
       learning_notes: notes.map(formatLearningNoteResponse),
     };
 
+    res.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
     return res.json(response);
   } catch (error) {
     console.error('Error fetching learning notes:', error);
@@ -84,6 +85,7 @@ export const getLearningNoteById = async (req: Request, res: Response): Promise<
       return res.status(404).json({ error: 'Learning note not found' });
     }
 
+    res.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
     return res.json(formatLearningNoteResponse(note));
   } catch (error) {
     console.error('Error fetching learning note:', error);

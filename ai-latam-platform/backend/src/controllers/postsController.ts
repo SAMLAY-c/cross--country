@@ -31,6 +31,7 @@ export const getAllPosts = async (req: Request, res: Response) => {
       })),
     };
 
+    res.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
     return res.json(response);
   } catch (error) {
     console.error('Error fetching posts:', error);
@@ -51,6 +52,7 @@ export const getPostById = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Post not found' });
     }
 
+    res.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
     return res.json({
       id: post.id,
       title: post.title,

@@ -8,7 +8,9 @@ import LearningNotesOverview from "./learning-notes-overview";
 import LearningNotesList from "./learning-notes-list";
 import { DUMMY_LEARNING_NOTES } from "@/lib/mock-data";
 
-export const dynamic = "force-dynamic";
+const REVALIDATE_SECONDS = 60 * 5;
+
+export const revalidate = REVALIDATE_SECONDS;
 
 type LearningNoteRow = {
   id: number;

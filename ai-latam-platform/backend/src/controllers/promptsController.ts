@@ -52,6 +52,7 @@ export const getAllPrompts = async (req: Request, res: Response): Promise<any> =
       prompts: prompts.map(formatPromptResponse),
     };
 
+    res.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
     return res.json(response);
   } catch (error) {
     console.error('Error fetching prompts:', error);
@@ -79,6 +80,7 @@ export const getPromptById = async (req: Request, res: Response): Promise<any> =
       return res.status(404).json({ error: 'Prompt not found' });
     }
 
+    res.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
     return res.json(formatPromptResponse(prompt));
   } catch (error) {
     console.error('Error fetching prompt:', error);

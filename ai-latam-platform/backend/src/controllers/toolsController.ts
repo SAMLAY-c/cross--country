@@ -46,6 +46,7 @@ export const getAllTools = async (req: Request, res: Response): Promise<any> => 
       tools: tools.map(formatToolResponse),
     };
 
+    res.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
     return res.json(response);
   } catch (error) {
     console.error('Error fetching tools:', error);
@@ -74,6 +75,7 @@ export const getToolById = async (req: Request, res: Response): Promise<any> => 
       return res.status(404).json({ error: 'Tool not found' });
     }
 
+    res.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
     return res.json(formatToolResponse(tool));
   } catch (error) {
     console.error('Error fetching tool:', error);

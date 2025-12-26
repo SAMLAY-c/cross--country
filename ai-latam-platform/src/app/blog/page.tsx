@@ -19,7 +19,9 @@ type Post = {
 
 const DUMMY_POSTS_TYPED: Post[] = DUMMY_POSTS;
 
-export const dynamic = "force-dynamic";
+const REVALIDATE_SECONDS = 60 * 5;
+
+export const revalidate = REVALIDATE_SECONDS;
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
@@ -46,7 +48,7 @@ function formatPublishedAt(value?: string | null): string {
 async function getPosts(): Promise<Post[]> {
   try {
     const response = await fetch(`${API_BASE}/api/posts`, {
-      cache: "no-store",
+      next: { revalidate: REVALIDATE_SECONDS },
     });
     if (!response.ok) {
       return DUMMY_POSTS_TYPED;

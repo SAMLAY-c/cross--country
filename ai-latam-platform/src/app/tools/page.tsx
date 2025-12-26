@@ -16,7 +16,9 @@ type Tool = {
 
 const DUMMY_TOOLS_TYPED: Tool[] = DUMMY_TOOLS;
 
-export const dynamic = "force-dynamic";
+const REVALIDATE_SECONDS = 60 * 5;
+
+export const revalidate = REVALIDATE_SECONDS;
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
@@ -24,7 +26,7 @@ const API_BASE =
 async function getTools(): Promise<Tool[]> {
   try {
     const response = await fetch(`${API_BASE}/api/tools`, {
-      cache: "no-store",
+      next: { revalidate: REVALIDATE_SECONDS },
     });
     if (!response.ok) {
       return DUMMY_TOOLS_TYPED;
