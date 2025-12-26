@@ -3,6 +3,7 @@ import cors from 'cors';
 import toolsRouter from './routes/tools';
 import promptsRouter from './routes/prompts';
 import postsRouter from './routes/posts';
+import papersRouter from './routes/papers';
 import learningNotesRouter from './routes/learningNotes';
 
 const app = express();
@@ -55,6 +56,7 @@ app.get('/api', (_req: Request, res: Response) => {
       tools: '/api/tools',
       prompts: '/api/prompts',
       posts: '/api/posts',
+      papers: '/api/papers',
       learningNotes: '/api/learning-notes',
     },
   });
@@ -64,6 +66,7 @@ app.get('/api', (_req: Request, res: Response) => {
 app.use('/api/tools', toolsRouter);
 app.use('/api/prompts', promptsRouter);
 app.use('/api/posts', postsRouter);
+app.use('/api/papers', papersRouter);
 app.use('/api/learning-notes', learningNotesRouter);
 
 // 404 处理

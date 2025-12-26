@@ -125,6 +125,57 @@ export const DUMMY_POSTS = [
   },
 ];
 
+export const DUMMY_PAPERS = [
+  {
+    id: 1,
+    title: "Agentic RAG: 任务规划驱动的检索增强生成框架",
+    arxivId: "2401.12345",
+    authors: ["L. Chen", "M. Huang", "S. Patel"],
+    summary:
+      "把检索、规划、执行分层，显著减少幻觉并提升多步任务的稳定性。",
+    venue: "NeurIPS",
+    year: 2024,
+    primaryCategory: "cs.CL",
+    tags: ["RAG", "Agent", "Evaluation"],
+    pdfUrl: "https://arxiv.org/abs/2401.12345",
+    codeUrl: "https://github.com/example/agentic-rag",
+    projectUrl: "https://agentic-rag.example.com",
+    publishedAt: "2024.10.12",
+  },
+  {
+    id: 2,
+    title: "Structured Prompting for Vision-Language Models",
+    arxivId: "2310.06789",
+    authors: ["A. Rivera", "J. Park"],
+    summary:
+      "提出多层提示词结构，兼顾可解释性与跨任务迁移能力。",
+    venue: "ICCV",
+    year: 2023,
+    primaryCategory: "cs.CV",
+    tags: ["VLM", "Prompting", "Transfer"],
+    pdfUrl: "https://arxiv.org/abs/2310.06789",
+    codeUrl: "https://github.com/example/structured-prompting",
+    projectUrl: null,
+    publishedAt: "2023.09.21",
+  },
+  {
+    id: 3,
+    title: "Cost-Aware LLM Orchestration at Scale",
+    arxivId: "2402.00890",
+    authors: ["R. Singh", "H. Nakamura", "E. Kim"],
+    summary:
+      "通过预算约束的路由策略，在成本下降 37% 的同时保持性能。",
+    venue: "ICLR",
+    year: 2024,
+    primaryCategory: "cs.AI",
+    tags: ["Routing", "Cost", "Systems"],
+    pdfUrl: "https://arxiv.org/abs/2402.00890",
+    codeUrl: "https://github.com/example/cost-aware-orchestration",
+    projectUrl: "https://llm-orchestration.example.com",
+    publishedAt: "2024.04.02",
+  },
+];
+
 export const DUMMY_LEARNING_NOTES = [
   {
     id: 1,

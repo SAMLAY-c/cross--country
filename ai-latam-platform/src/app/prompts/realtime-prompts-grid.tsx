@@ -67,11 +67,16 @@ export default function RealtimePromptsGrid({
           }
         }
       )
-      .subscribe((status) => {
+      .subscribe((status, err) => {
         if (status === "SUBSCRIBED") {
           console.log("✅ Successfully subscribed to prompts realtime updates");
         } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
-          console.error("❌ Failed to subscribe to prompts realtime updates");
+          console.warn(
+            "⚠️ Realtime subscription unavailable (this is okay - page will still work)"
+          );
+          if (err) {
+            console.debug("Realtime error details:", err.message);
+          }
         }
       });
 

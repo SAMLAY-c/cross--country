@@ -69,6 +69,37 @@ CREATE INDEX IF NOT EXISTS idx_posts_published_at ON posts(published_at);
 CREATE INDEX IF NOT EXISTS idx_posts_created_at ON posts(created_at);
 
 -- ============================================
+-- Papers 表
+-- ============================================
+CREATE TABLE IF NOT EXISTS papers (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(500) NOT NULL,
+  arxiv_id VARCHAR(50) NOT NULL UNIQUE,
+  slug VARCHAR(300) NOT NULL UNIQUE,
+  authors JSONB NOT NULL DEFAULT '[]'::jsonb,
+  summary TEXT,
+  abstract TEXT,
+  venue VARCHAR(200),
+  year INTEGER,
+  primary_category VARCHAR(100),
+  tags JSONB NOT NULL DEFAULT '[]'::jsonb,
+  pdf_url VARCHAR(500),
+  code_url VARCHAR(500),
+  project_url VARCHAR(500),
+  cover_image VARCHAR(500),
+  published_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Papers 表索引
+CREATE INDEX IF NOT EXISTS idx_papers_year ON papers(year);
+CREATE INDEX IF NOT EXISTS idx_papers_published_at ON papers(published_at);
+CREATE INDEX IF NOT EXISTS idx_papers_created_at ON papers(created_at);
+CREATE INDEX IF NOT EXISTS idx_papers_primary_category ON papers(primary_category);
+CREATE INDEX IF NOT EXISTS idx_papers_tags_gin ON papers USING GIN (tags);
+CREATE INDEX IF NOT EXISTS idx_papers_authors_gin ON papers USING GIN (authors);
+
+-- ============================================
 -- 初始测试数据 (可选)
 -- ============================================
 
