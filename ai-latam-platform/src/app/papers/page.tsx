@@ -1,11 +1,13 @@
 import Nav from "@/components/nav";
 import { DUMMY_PAPERS } from "@/lib/mock-data";
 import PapersCatalog, { PaperActions } from "./papers-catalog";
+import Link from "next/link";
 
 type Paper = {
   id: number;
   title: string;
   arxivId?: string | null;
+  slug?: string | null;
   authors: string[];
   summary?: string | null;
   abstract?: string | null;
@@ -22,7 +24,9 @@ type Paper = {
 
 const DUMMY_PAPERS_TYPED: Paper[] = DUMMY_PAPERS;
 
-export const dynamic = "force-dynamic";
+const REVALIDATE_SECONDS = 60 * 60;
+
+export const revalidate = REVALIDATE_SECONDS;
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
@@ -69,7 +73,7 @@ function formatVenue(paper: Paper): string {
 async function getPapers(): Promise<Paper[]> {
   try {
     const response = await fetch(`${API_BASE}/api/papers`, {
-      cache: "no-store",
+      next: { revalidate: REVALIDATE_SECONDS },
     });
     if (!response.ok) {
       return DUMMY_PAPERS_TYPED;
@@ -82,6 +86,7 @@ async function getPapers(): Promise<Paper[]> {
       id: row.id,
       title: row.title,
       arxivId: (row as { arxiv_id?: string | null }).arxiv_id ?? null,
+      slug: (row as { slug?: string | null }).slug ?? null,
       authors: (row as { authors?: string[] | null }).authors ?? [],
       summary: (row as { summary?: string | null }).summary ?? null,
       abstract: (row as { abstract?: string | null }).abstract ?? null,
@@ -105,7 +110,7 @@ async function getPapers(): Promise<Paper[]> {
 
 export default async function PapersPage() {
   const papers = await getPapers();
-  const [featured, ...rest] = papers;
+  const featured = papers[0];
 
   return (
     <div
@@ -161,69 +166,49 @@ export default async function PapersPage() {
 
             <div className="lg:col-span-7">
               {featured ? (
-                <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_25px_60px_rgba(0,0,0,0.35)] backdrop-blur">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_15%,rgba(255,179,71,0.15),transparent_55%),radial-gradient(circle_at_90%_20%,rgba(76,180,255,0.18),transparent_60%)]" />
-                  <div className="relative grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-                    <div className="space-y-4">
-                      <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[var(--accent)]">
-                        Featured Paper
-                      </p>
-                      <h2 className="text-3xl font-bold text-white">
+                <div className="relative w-full aspect-video overflow-hidden rounded-2xl border border-[#333333] bg-[#121212]">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#0a0a0a] to-[#000000]" />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.35),rgba(0,0,0,0.9))]" />
+                  {featured.coverImage ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={featured.coverImage}
+                      alt={featured.title}
+                      className="absolute inset-0 h-full w-full object-cover opacity-70"
+                    />
+                  ) : null}
+                  <div className="absolute bottom-0 left-0 w-full p-8">
+                    <span className="mb-2 block text-xs font-bold uppercase tracking-[0.35em] text-[var(--accent)]">
+                      Featured Paper
+                    </span>
+                    {featured.slug ? (
+                      <Link
+                        href={`/papers/${featured.slug}`}
+                        className="text-2xl font-bold text-white transition-colors hover:text-[var(--accent)]"
+                      >
+                        {featured.title}
+                      </Link>
+                    ) : (
+                      <h2 className="text-2xl font-bold text-white transition-colors group-hover:text-[var(--accent)]">
                         {featured.title}
                       </h2>
-                      {featured.primaryCategory ? (
-                        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/55">
-                          {featured.primaryCategory}
-                        </p>
-                      ) : null}
-                      <p className="text-sm text-white/65">
-                        {formatAuthors(featured.authors)}
-                      </p>
-                      <p className="text-sm text-white/55 leading-relaxed">
-                        {featured.summary ||
-                          featured.abstract ||
-                          "暂无摘要。"}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {(featured.tags || []).slice(0, 4).map((tag) => (
-                          <span
-                            key={tag}
-                            className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                      <PaperActions paper={featured} />
+                    )}
+                    <div className="mt-3 flex items-center gap-4 text-xs text-white/50">
+                      <span>{formatAuthors(featured.authors)}</span>
+                      <span>·</span>
+                      <span>{formatVenue(featured)}</span>
+                      <span>·</span>
+                      <span>{featured.publishedAt ?? "2024.10.12"}</span>
                     </div>
-                    <div className="relative">
-                      <div className="rounded-2xl border border-white/15 bg-white/5 p-5">
-                        <div className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
-                          {formatVenue(featured)}
-                        </div>
-                        <div className="mt-3 text-4xl font-bold text-white">
-                          {featured.publishedAt ?? "2024.10.12"}
-                        </div>
-                        <div className="mt-6 h-40 rounded-xl border border-white/10 bg-[radial-gradient(circle_at_20%_20%,rgba(255,179,71,0.25),transparent_60%),radial-gradient(circle_at_80%_30%,rgba(76,180,255,0.2),transparent_60%),linear-gradient(135deg,#0b0f1e,#111827)]">
-                          {featured.coverImage ? (
-                            <div
-                              className="h-full w-full rounded-xl bg-cover bg-center"
-                              style={{ backgroundImage: `url(${featured.coverImage})` }}
-                            />
-                          ) : (
-                            <div className="flex h-full items-center justify-center text-xs font-semibold uppercase tracking-[0.35em] text-white/60">
-                              Research Visual
-                            </div>
-                          )}
-                        </div>
-                      </div>
+                    <div className="mt-3 flex items-center gap-3">
+                      <PaperActions paper={featured} />
                     </div>
                   </div>
                 </div>
               ) : null}
             </div>
           </section>
-          <PapersCatalog papers={rest.length ? rest : papers} />
+          <PapersCatalog papers={papers} />
         </main>
       </div>
     </div>

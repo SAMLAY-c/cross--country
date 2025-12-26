@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import StickyFilterBar from "@/components/sticky-filter-bar";
 
@@ -21,6 +22,7 @@ const TOPIC_CATEGORIES = [
 export type Paper = {
   id: number;
   title: string;
+  slug?: string | null;
   authors: string[];
   summary?: string | null;
   abstract?: string | null;
@@ -88,8 +90,24 @@ export function PaperActions({ paper }: { paper: Paper }) {
 }
 
 function PaperCard({ paper }: { paper: Paper }) {
+  const href = paper.slug ? `/papers/${paper.slug}` : null;
   return (
     <article className="group relative flex h-full flex-col gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_45px_rgba(0,0,0,0.28)] backdrop-blur transition hover:border-white/25">
+      <div className="h-36 overflow-hidden rounded-xl border border-white/10 bg-[radial-gradient(circle_at_20%_20%,rgba(255,179,71,0.2),transparent_60%),radial-gradient(circle_at_80%_30%,rgba(76,180,255,0.18),transparent_60%),linear-gradient(135deg,#0b0f1e,#111827)]">
+        {paper.coverImage ? (
+          <img
+            src={paper.coverImage}
+            alt={paper.title}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center text-[10px] font-semibold uppercase tracking-[0.35em] text-white/60">
+            Research Visual
+          </div>
+        )}
+      </div>
       <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.3em] text-white/45">
         <span>{formatVenue(paper)}</span>
         <span>{paper.publishedAt ?? "2024.10.12"}</span>
@@ -99,9 +117,18 @@ function PaperCard({ paper }: { paper: Paper }) {
           {paper.primaryCategory}
         </span>
       ) : null}
-      <h3 className="text-xl font-semibold text-white transition group-hover:text-[var(--accent)]">
-        {paper.title}
-      </h3>
+      {href ? (
+        <Link
+          href={href}
+          className="text-xl font-semibold text-white transition group-hover:text-[var(--accent)]"
+        >
+          {paper.title}
+        </Link>
+      ) : (
+        <h3 className="text-xl font-semibold text-white transition group-hover:text-[var(--accent)]">
+          {paper.title}
+        </h3>
+      )}
       <p className="text-sm text-white/65">{formatAuthors(paper.authors)}</p>
       <p className="text-sm text-white/55 leading-relaxed [display:-webkit-box] [-webkit-line-clamp:3] [-webkit-box-orient:vertical] overflow-hidden">
         {paper.summary || paper.abstract || "暂无摘要。"}

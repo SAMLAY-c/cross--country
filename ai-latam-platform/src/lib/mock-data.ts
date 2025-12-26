@@ -130,6 +130,7 @@ export const DUMMY_PAPERS = [
     id: 1,
     title: "Agentic RAG: 任务规划驱动的检索增强生成框架",
     arxivId: "2401.12345",
+    slug: "agentic-rag-task-planning",
     authors: ["L. Chen", "M. Huang", "S. Patel"],
     summary:
       "把检索、规划、执行分层，显著减少幻觉并提升多步任务的稳定性。",
@@ -146,6 +147,7 @@ export const DUMMY_PAPERS = [
     id: 2,
     title: "Structured Prompting for Vision-Language Models",
     arxivId: "2310.06789",
+    slug: "structured-prompting-vlm",
     authors: ["A. Rivera", "J. Park"],
     summary:
       "提出多层提示词结构，兼顾可解释性与跨任务迁移能力。",
@@ -162,6 +164,7 @@ export const DUMMY_PAPERS = [
     id: 3,
     title: "Cost-Aware LLM Orchestration at Scale",
     arxivId: "2402.00890",
+    slug: "cost-aware-llm-orchestration",
     authors: ["R. Singh", "H. Nakamura", "E. Kim"],
     summary:
       "通过预算约束的路由策略，在成本下降 37% 的同时保持性能。",
